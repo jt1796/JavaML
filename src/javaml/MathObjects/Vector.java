@@ -15,6 +15,15 @@ public class Vector {
     private boolean isRow;
     private boolean isColumn;
     
+    public Vector(int length) {
+        this.length = length;
+        double[] data = new double[length];
+        for(int i = 0; i < length; i++) {
+            data[i] = 0;
+        }
+        backingMatrix = new Matrix(1, length, data);
+    }
+    
     public Vector(int length, double[] data) {
         this.length = length;
         backingMatrix = new Matrix(1, length, data);
