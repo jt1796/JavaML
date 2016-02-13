@@ -15,7 +15,20 @@ public class Vector {
     private boolean isRow;
     private boolean isColumn;
     
-    public Vector(int length) {
-        
+    public Vector(int length, double[] data) {
+        this.length = length;
+        backingMatrix = new Matrix(1, length, data);
+    }
+    
+    public double get(int i) {
+        return backingMatrix.get(0, i);
+    }
+    
+    public double dotProduct(Vector vector) {
+        int dotprod = 0;
+        for(int i = 0; i < length; i++) {
+            dotprod += get(i) * vector.get(i);
+        }
+        return dotprod;
     }
 }
