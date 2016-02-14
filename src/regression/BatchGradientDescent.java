@@ -26,18 +26,19 @@ public class BatchGradientDescent {
     }
     
     public void execute() {
-        coeff = new Vector(dataSet.getVarSpan() + 1);
+        coeff = new Vector(dataSet.getVarSpan());
         for(int i = 0; i < iterations; i++) {
             double[] newCoeff = new double[coeff.getLength()];
             for(int omega = 0; omega < coeff.getLength(); omega++) {
                 double sum = 0;
                 for(DataElement dataRow : dataSet) {
                     sum += (coeff.dotProduct(dataRow.independenceAsVector()) - dataRow.getResponse()) * dataRow.getIth(omega);
-                    sum = sum * stepSize * (-1);
-                    newCoeff[omega] = coeff.get(omega) - sum;
                 }
+                sum = sum * stepSize;
+                newCoeff[omega] = coeff.get(omega) - sum;
             }
-            coeff = new Vector(dataSet.getDataSize(), newCoeff);
+            coeff = new Vector(dataSet.getVarSpan(), newCoeff);
+            System.out.println("=");
         }
     }
     

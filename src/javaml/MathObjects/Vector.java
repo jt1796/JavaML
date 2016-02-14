@@ -55,7 +55,10 @@ public class Vector {
     }
     
     public double dotProduct(Vector vector) {
-        int dotprod = 0;
+        if(vector.length != this.length) {
+            throw new RuntimeException("vector length mismatch: Me " + length + " other: " + vector.length);
+        }
+        double dotprod = 0;
         for(int i = 0; i < length; i++) {
             dotprod += get(i) * vector.get(i);
         }

@@ -20,14 +20,19 @@ public class DataSet implements Iterable<DataElement> {
     public DataSet(int n) {
         this.data = new LinkedList<>();
         dataSize = 0;
-        numberOfIndependents = n;
+        numberOfIndependents = n + 1;
     }
     
     public void addData(double response, double[] data) {
-        if(data.length != numberOfIndependents) {
+        if(data.length + 1 != numberOfIndependents) {
             throw new RuntimeException("Wrong number of inputs");
         }
-        DataElement element = new DataElement(response, data);
+        double[] extendedData = new double[data.length + 1];
+        extendedData[0] = 1;
+        for(int i = 0; i < data.length; i++) {
+            extendedData[i+1] = data[i];
+        }
+        DataElement element = new DataElement(response, extendedData);
         this.data.add(element);
         dataSize++;
     }

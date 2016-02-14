@@ -33,7 +33,7 @@ public class BatchGradientDescentTest {
         set.addData(6, new double[]{3});
         set.addData(8, new double[]{4});
         set.addData(20, new double[]{10});
-        BatchGradientDescent batch = new BatchGradientDescent(set, 100, 1);
+        BatchGradientDescent batch = new BatchGradientDescent(set, 1000, .01);
         batch.execute();
         assertEquals(2, batch.getCoeffs().get(1), 0.01);
     }
