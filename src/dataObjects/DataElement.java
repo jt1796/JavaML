@@ -10,5 +10,19 @@ package dataObjects;
  * @author John
  */
 public class DataElement {
+    private double response = 0;
+    double[] independents = null;
     
+    public DataElement(double response, double[] independents) {
+        this.response = response;
+        this.independents = independents;
+    }
+    
+    public double getResponse() {
+        return response;
+    }
+    
+    public double getIth(int i) {
+        return independents[i];
+    }
 }

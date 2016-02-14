@@ -5,6 +5,7 @@
  */
 package regression;
 
+import dataObjects.DataSet;
 import javaml.MathObjects.Vector;
 
 /**
@@ -13,19 +14,22 @@ import javaml.MathObjects.Vector;
  */
 public class BatchGradientDescent {
     private double stepSize = 0;
-    private int varSpan = 0;
     private int iterations = 0;
     private Vector coeff = null;
+    private DataSet dataSet = null;
     
-    public BatchGradientDescent(double stepSize, int varSpan, int iterations) {
+    public BatchGradientDescent(DataSet dataSet, int iterations, double stepSize) {
         this.stepSize = stepSize;
-        this.varSpan = varSpan;
         this.iterations = iterations;
-        this.coeff = new Vector(varSpan);
+        this.dataSet = dataSet;
     }
     
     public void execute() {
-        
+        coeff = new Vector(dataSet.getVarSpan() + 1);
+        for(int i = 0; i < iterations; i++) {
+            //first compute sum, multiply by stepSize.
+            //Then take this sum, and multiply by each x_i corresponding to each coeff, then subtract from that coeff.
+        }
     }
     
 }
