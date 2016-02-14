@@ -12,7 +12,7 @@ import java.util.Iterator;
  *
  * @author John
  */
-public class DataSet {
+public class DataSet implements Iterable<DataElement> {
     LinkedList<DataElement> data = null;
     int dataSize;
     int numberOfIndependents;

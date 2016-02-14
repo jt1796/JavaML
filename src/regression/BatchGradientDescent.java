@@ -5,6 +5,7 @@
  */
 package regression;
 
+import dataObjects.DataElement;
 import dataObjects.DataSet;
 import javaml.MathObjects.Vector;
 
@@ -30,8 +31,8 @@ public class BatchGradientDescent {
             double[] newCoeff = new double[coeff.getLength()];
             for(int omega = 0; omega < coeff.getLength(); omega++) {
                 double sum = 0;
-                for(int dataRow = 0; dataRow < dataSet.getDataSize(); dataRow++) {
-                    //sum += (coeff.dotProduct(<dataRow>) - response<dataRow>) * omegath element on dataRow
+                for(DataElement dataRow : dataSet) {
+                    sum += (coeff.dotProduct(dataRow.independenceAsVector()) - dataRow.getResponse()) * dataRow.getIth(omega);
                     sum = sum * stepSize * (-1);
                     newCoeff[omega] = coeff.get(omega) - sum;
                 }

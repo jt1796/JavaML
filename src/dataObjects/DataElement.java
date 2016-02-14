@@ -5,6 +5,8 @@
  */
 package dataObjects;
 
+import javaml.MathObjects.Vector;
+
 /**
  *
  * @author John
@@ -24,5 +26,9 @@ public class DataElement {
     
     public double getIth(int i) {
         return independents[i];
+    }
+    
+    public Vector independenceAsVector() {
+        return new Vector(independents.length, independents);
     }
 }

@@ -29,6 +29,27 @@ public class Vector {
         backingMatrix = new Matrix(1, length, data);
     }
     
+    public Vector scalarMultiplication(double c) {
+        double[] newData = new double[this.length];
+        for(int i = 0; i < length; i++) {
+            newData[i] = c * this.get(i);
+        }
+        return new Vector(length, newData);
+    }
+    
+    public Vector add(Vector vector) {
+        double[] newData = new double[this.length];
+        for(int i = 0; i < length; i++) {
+            newData[i] = vector.get(i) + this.get(i);
+        }
+        return new Vector(length, newData);
+    }
+    
+    public Vector subtract(Vector vector) {
+        Vector inv = this.add(vector);
+        return inv.scalarMultiplication(-1);
+    }
+    
     public double get(int i) {
         return backingMatrix.get(0, i);
     }
