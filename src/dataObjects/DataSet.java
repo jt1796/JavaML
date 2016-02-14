@@ -39,4 +39,8 @@ public class DataSet {
     public int getVarSpan() {
         return numberOfIndependents;
     }
+    
+    public int getDataSize() {
+        return dataSize;
+    }
 }

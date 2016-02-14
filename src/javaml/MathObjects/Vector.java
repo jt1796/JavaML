@@ -40,4 +40,8 @@ public class Vector {
         }
         return dotprod;
     }
+    
+    public int getLength() {
+        return length;
+    }
 }

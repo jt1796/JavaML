@@ -27,9 +27,24 @@ public class BatchGradientDescent {
     public void execute() {
         coeff = new Vector(dataSet.getVarSpan() + 1);
         for(int i = 0; i < iterations; i++) {
-            //first compute sum, multiply by stepSize.
-            //Then take this sum, and multiply by each x_i corresponding to each coeff, then subtract from that coeff.
+            double[] newCoeff = new double[coeff.getLength()];
+            for(int omega = 0; omega < coeff.getLength(); omega++) {
+                double sum = 0;
+                for(int dataRow = 0; dataRow < dataSet.getDataSize(); dataRow++) {
+                    //sum += (coeff.dotProduct(<dataRow>) - response<dataRow>) * omegath element on dataRow
+                    sum = sum * stepSize * (-1);
+                    newCoeff[omega] = coeff.get(omega) - sum;
+                }
+            }
+            coeff = new Vector(dataSet.getDataSize(), newCoeff);
         }
+    }
+    
+    public Vector getCoeffs() {
+        if(null == coeff) {
+            throw new RuntimeException("Must call execute() before this call");
+        }
+        return coeff;
     }
     
 }
