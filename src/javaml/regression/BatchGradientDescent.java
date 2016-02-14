@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package regression;
+package javaml.regression;
 
 import dataObjects.DataElement;
 import dataObjects.DataSet;
