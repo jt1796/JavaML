@@ -29,9 +29,7 @@ public class DataSet implements Iterable<DataElement> {
         }
         double[] extendedData = new double[data.length + 1];
         extendedData[0] = 1;
-        for(int i = 0; i < data.length; i++) {
-            extendedData[i+1] = data[i];
-        }
+        System.arraycopy(data, 0, extendedData, 1, data.length);
         DataElement element = new DataElement(response, extendedData);
         this.data.add(element);
         dataSize++;

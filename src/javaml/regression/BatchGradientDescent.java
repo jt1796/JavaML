@@ -13,16 +13,10 @@ import javaml.mathObjects.Vector;
  *
  * @author John
  */
-public class BatchGradientDescent {
-    private double stepSize = 0;
-    private int iterations = 0;
-    private Vector coeff = null;
-    private DataSet dataSet = null;
+public class BatchGradientDescent extends Regression {
     
     public BatchGradientDescent(DataSet dataSet, int iterations, double stepSize) {
-        this.stepSize = stepSize;
-        this.iterations = iterations;
-        this.dataSet = dataSet;
+        super(dataSet, iterations, stepSize);
     }
     
     public void execute() {
@@ -32,20 +26,11 @@ public class BatchGradientDescent {
             for(int omega = 0; omega < coeff.getLength(); omega++) {
                 double sum = 0;
                 for(DataElement dataRow : dataSet) {
-                    sum += (coeff.dotProduct(dataRow.independenceAsVector()) - dataRow.getResponse()) * dataRow.getIth(omega);
+                    sum += (coeff.dotProduct(dataRow.independenceAsVector()) - dataRow.getResponse()) * dataRow.getIth(omega) * stepSize;
                 }
-                sum = sum * stepSize;
                 newCoeff[omega] = coeff.get(omega) - sum;
             }
             coeff = new Vector(dataSet.getVarSpan(), newCoeff);
         }
     }
-    
-    public Vector getCoeffs() {
-        if(null == coeff) {
-            throw new RuntimeException("Must call execute() before this call");
-        }
-        return coeff;
-    }
-    
 }

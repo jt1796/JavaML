@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package javaml.mathObjects;
+package javaml.tests.mathObjects;
 
 import javaml.mathObjects.Matrix;
 import org.junit.After;
