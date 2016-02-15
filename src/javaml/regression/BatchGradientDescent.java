@@ -5,9 +5,9 @@
  */
 package javaml.regression;
 
-import dataObjects.DataElement;
-import dataObjects.DataSet;
-import javaml.MathObjects.Vector;
+import javaml.dataObjects.DataElement;
+import javaml.dataObjects.DataSet;
+import javaml.mathObjects.Vector;
 
 /**
  *
@@ -38,7 +38,6 @@ public class BatchGradientDescent {
                 newCoeff[omega] = coeff.get(omega) - sum;
             }
             coeff = new Vector(dataSet.getVarSpan(), newCoeff);
-            System.out.println("=");
         }
     }
     

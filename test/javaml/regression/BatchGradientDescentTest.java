@@ -6,7 +6,7 @@
 package javaml.regression;
 
 import javaml.regression.BatchGradientDescent;
-import dataObjects.DataSet;
+import javaml.dataObjects.DataSet;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
