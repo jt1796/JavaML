@@ -6,6 +6,7 @@
 package javaml.tests.regression;
 
 import javaml.dataObjects.DataSet;
+import javaml.regression.Regression;
 import javaml.regression.StochasticGradientDescent;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -19,13 +20,13 @@ public class StochasticGradientDescentTest {
     public StochasticGradientDescentTest() {
     }
 
-        @Test
+    @Test
     public void TwoDimLinear() {
         DataSet set = new DataSet(1);
         set.addData(6, new double[]{3});
         set.addData(8, new double[]{4});
         set.addData(20, new double[]{10});
-        StochasticGradientDescent stoch = new StochasticGradientDescent(set, 10000, .01);
+        Regression stoch = new StochasticGradientDescent(set, 10000, .01);
         stoch.execute();
         assertEquals(2, stoch.getCoeffs().get(1), 0.01);
     }
@@ -38,7 +39,7 @@ public class StochasticGradientDescentTest {
         set.addData(53 + 3, new double[]{3, 1, 6, 1});
         set.addData(150 + 3, new double[]{12, -3, 3, 8});
         set.addData(672 + 3, new double[]{7, 19, 23, 51});
-        StochasticGradientDescent stoch = new StochasticGradientDescent(set, 80000, .001);
+        Regression stoch = new StochasticGradientDescent(set, 80000, .001);
         stoch.execute();
         assertEquals(3, stoch.getCoeffs().get(0), 0.01);
         assertEquals(7, stoch.getCoeffs().get(1), 0.01);

@@ -10,13 +10,14 @@ package javaml.mathObjects;
  * @author John
  */
 public class Matrix {
-    private int width;
-    private int height;
-    private double[][] data;
+    private final int width;
+    private final int height;
+    private final double[][] data;
     
     public Matrix(Matrix matrix) {
         this.width = matrix.getWidth();
         this.height = matrix.getHeight();
+        data = new double[height][width];
         for(int r = 0; r < height; r++) {
             for(int c = 0; c < width; c++) {
                 data[r][c] = matrix.get(r, c);

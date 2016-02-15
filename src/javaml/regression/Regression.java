@@ -24,7 +24,7 @@ public abstract class Regression {
         this.dataSet = dataSet;
     }
     
-    abstract void execute();
+    public abstract void execute();
     
     public Vector getCoeffs() {
         if(null == coeff) {

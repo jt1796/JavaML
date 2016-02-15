@@ -7,6 +7,7 @@ package javaml.tests.regression;
 
 import javaml.dataObjects.DataSet;
 import javaml.regression.BatchGradientDescent;
+import javaml.regression.Regression;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -25,7 +26,7 @@ public class BatchGradientDescentTest {
         set.addData(6, new double[]{3});
         set.addData(8, new double[]{4});
         set.addData(20, new double[]{10});
-        BatchGradientDescent batch = new BatchGradientDescent(set, 1000, .01);
+        Regression batch = new BatchGradientDescent(set, 1000, .01);
         batch.execute();
         assertEquals(2, batch.getCoeffs().get(1), 0.01);
     }
@@ -38,7 +39,7 @@ public class BatchGradientDescentTest {
         set.addData(53 + 3, new double[]{3, 1, 6, 1});
         set.addData(150 + 3, new double[]{12, -3, 3, 8});
         set.addData(672 + 3, new double[]{7, 19, 23, 51});
-        BatchGradientDescent batch = new BatchGradientDescent(set, 50000, .0005);
+        Regression batch = new BatchGradientDescent(set, 50000, .0005);
         batch.execute();
         assertEquals(3, batch.getCoeffs().get(0), 0.01);
         assertEquals(7, batch.getCoeffs().get(1), 0.01);

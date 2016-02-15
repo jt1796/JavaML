@@ -10,10 +10,9 @@ package javaml.mathObjects;
  * @author John
  */
 public class Vector {
-    private Matrix backingMatrix;
-    private int length;
-    private boolean isRow;
-    private boolean isColumn;
+    private final Matrix backingMatrix;
+    private final int length;
+    private final boolean isColumn;
     
     public Vector(int length) {
         this.length = length;
@@ -22,11 +21,13 @@ public class Vector {
             data[i] = 0;
         }
         backingMatrix = new Matrix(1, length, data);
+        isColumn = true;
     }
     
     public Vector(int length, double[] data) {
         this.length = length;
         backingMatrix = new Matrix(1, length, data);
+        isColumn = true;
     }
     
     public Vector scalarMultiplication(double c) {
