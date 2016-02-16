@@ -84,6 +84,26 @@ public class Matrix {
         return new Matrix(newdata);
     }
     
+    public Matrix ReducedRowEchelonForm(Matrix re) {
+        //start at mid bottow right and work to top left.
+        //add on a multiple to each row above to zero out.
+        return null;
+    }
+    
+    public Matrix RowEchelonForm(Matrix matrix) {
+        //start at top left, work down in diagonal.
+        //if element is zero, swap with nonzero row below.
+        //for all rows below, add on multiple to create zero in that row.
+        return null;
+    }
+    
+    public Matrix inverse() {
+        //augment this matrix with identity on the right. 
+        //Then convert to RowEchelon
+        //Lastly, scrape the right half.
+        return null;
+    }
+    
     public double trace() {
         int trace = 0;
         for (int i = 0; i < height; i++) {

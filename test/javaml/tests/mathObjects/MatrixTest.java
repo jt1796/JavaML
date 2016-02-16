@@ -21,22 +21,6 @@ public class MatrixTest {
     
     public MatrixTest() {
     }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
 
     @Test
     public void createTwoByThreeArray() {
@@ -111,5 +95,34 @@ public class MatrixTest {
         double[][] testData = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
         Matrix testMat = new Matrix(testData);
         assertEquals(1 + 5 + 9, testMat.trace(), 0.01);
+    }
+    
+    @Test
+    public void rowEchelon() {
+        double[][] testData = {{1, 1, 2},{0, 1, 3},{0, 0, 5}};
+        Matrix testMat = new Matrix(testData);
+        testMat = testMat.RowEchelonForm(testMat);
+        double[][] trueData = {{1, 1, 1}, {0, 1, 1}, {0, 0, -2}};
+        Matrix trueMat = new Matrix(trueData);
+        assertEquals(testMat, trueMat);
+    }
+    
+    @Test
+    public void testInverse() {
+        double[][] testData = {{1, 3, 3},{1, 4, 3},{1, 3, 4}};
+        Matrix testMat = new Matrix(testData);
+        testMat = testMat.RowEchelonForm(testMat);
+        double[][] trueData = {{7, -3, -3}, {-1, 1, 0}, {-1, 0, 1}};
+        Matrix trueMat = new Matrix(trueData);
+        assertEquals(testMat.inverse(), trueMat);
+    }
+    
+    @Test
+    public void testEquals() {
+        double[][] testData = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+        double[][] trueData = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+        Matrix testMat = new Matrix(testData);
+        Matrix trueMat = new Matrix(trueData);
+        assertEquals(testMat, trueMat);
     }
 }
