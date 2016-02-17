@@ -99,10 +99,10 @@ public class MatrixTest {
     
     @Test
     public void rowEchelon() {
-        double[][] testData = {{1, 1, 2},{0, 1, 3},{0, 0, 5}};
+        double[][] testData = {{1, 7, 1},{2, 4, 3},{7, 1, 4}};
         Matrix testMat = new Matrix(testData);
-        testMat = testMat.RowEchelonForm(testMat);
-        double[][] trueData = {{1, 1, 1}, {0, 1, 1}, {0, 0, -2}};
+        testMat = testMat.RowEchelonForm();
+        double[][] trueData = {{1, 7, 1}, {0, 1, -0.1}, {0, 0, 1}};
         Matrix trueMat = new Matrix(trueData);
         assertEquals(testMat, trueMat);
     }
@@ -111,18 +111,35 @@ public class MatrixTest {
     public void testInverse() {
         double[][] testData = {{1, 3, 3},{1, 4, 3},{1, 3, 4}};
         Matrix testMat = new Matrix(testData);
-        testMat = testMat.RowEchelonForm(testMat);
         double[][] trueData = {{7, -3, -3}, {-1, 1, 0}, {-1, 0, 1}};
         Matrix trueMat = new Matrix(trueData);
         assertEquals(testMat.inverse(), trueMat);
     }
     
     @Test
-    public void testEquals() {
+    public void testEqualsWhenEqual() {
         double[][] testData = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-        double[][] trueData = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-        Matrix testMat = new Matrix(testData);
-        Matrix trueMat = new Matrix(trueData);
-        assertEquals(testMat, trueMat);
+        double[][] testDataTwo = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+        Matrix mat = new Matrix(testData);
+        Matrix matTwo = new Matrix(testDataTwo);
+        assertEquals(mat, matTwo);
+    }
+    
+    @Test
+    public void testEqualsWhenDimMismatch() {
+        double[][] testData = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+        double[][] testDataTwo = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {3, 4, 5}};
+        Matrix mat = new Matrix(testData);
+        Matrix matTwo = new Matrix(testDataTwo);
+        assertFalse(mat.equals(matTwo));
+    }
+    
+    @Test
+    public void testEqualsWhenNotEqual() {
+        double[][] testData = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+        double[][] testDataTwo = {{1, 1, 3}, {4, 5, 6}, {7, 8, 9}};
+        Matrix mat = new Matrix(testData);
+        Matrix matTwo = new Matrix(testDataTwo);
+        assertFalse(mat.equals(matTwo));
     }
 }

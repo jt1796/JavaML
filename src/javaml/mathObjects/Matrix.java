@@ -90,11 +90,33 @@ public class Matrix {
         return null;
     }
     
-    public Matrix RowEchelonForm(Matrix matrix) {
+    public Matrix RowEchelonForm() {
         //start at top left, work down in diagonal.
         //if element is zero, swap with nonzero row below.
         //for all rows below, add on multiple to create zero in that row.
-        return null;
+        double[][] newdata = data;
+        for(int r = 0; r < height; r++) {
+            if(get(r, r) == 0) {
+                int i = r + 1;
+                while(i < height && newdata[i][r] != 0) {
+                    i++;
+                }
+                double[] tmp = newdata[r];
+                newdata[r] = newdata[i];
+                newdata[i] = tmp;
+            }
+            double mag = newdata[r][r];
+            for(int c = 0; c < width; c++) {
+                newdata[r][c] = newdata[r][c] / mag;
+            }
+            for(int lowerrow = r + 1; lowerrow < height; lowerrow++) {
+                double addfactor = (-1) * newdata[lowerrow][r] / newdata[r][r];
+                for(int c = r; c < width; c++) {
+                    newdata[lowerrow][c] += newdata[r][c] * addfactor;
+                }
+            }
+        }
+        return new Matrix(newdata);
     }
     
     public Matrix inverse() {
@@ -128,8 +150,38 @@ public class Matrix {
         return width;
     }
     
+    @Override
+    public boolean equals(Object other) {
+        if(this == other) {
+            return true;
+        }
+        if(!(other instanceof Matrix)) {
+            return false;
+        }
+        Matrix mat = (Matrix) other;
+        if(height == mat.getHeight() && width == mat.getWidth()) {
+        } else {
+            return false;
+        }
+        for(int r = 0; r < height; r++) {
+            for(int c = 0; c < width; c++) {
+                if(!(Math.abs(get(r, c) - mat.get(r, c)) < .0001)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
     public String toString() {
-        //get the longest number in the matrix. 
-        return "TODO";
+        String buffer = "";
+        for(int r = 0; r < height; r++) {
+            buffer += "[ ";
+            for(int c = 0; c < width; c++) {
+                buffer += " " + get(r, c);
+            }
+            buffer += "]\n";
+        }
+        return buffer;
     }
 }
