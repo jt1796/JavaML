@@ -68,7 +68,6 @@ public class Matrix {
         int dotprodlength = this.width;
         double[][] newdata = new double[newheight][newwidth];
         int c = 0, r = 0, i = 0;
-        try{
         for(r = 0; r < newheight; r++) {
             for(c = 0; c < newwidth; c++) {
                 int dotprod = 0;
@@ -78,22 +77,25 @@ public class Matrix {
                 newdata[r][c] = dotprod;
             }
         }   
-        }catch(Exception e){
-            System.out.println(r + "x" + c + "x" + i);
+        return new Matrix(newdata);
+    }
+    
+    public Matrix ReducedRowEchelonForm() {
+        double[][] newdata = data;
+        for(int r = height - 1; r >= 0; r--) {
+            if(newdata[r][r] != 0.0){
+                for(int upperrow = r - 1; upperrow >= 0; upperrow--) {
+                    double addfactor = (-1) * newdata[upperrow][r] / newdata[r][r];
+                    for(int c = r; c < width; c++) {
+                        newdata[upperrow][c] += newdata[r][c] * addfactor;
+                    }
+                }
+            }
         }
         return new Matrix(newdata);
     }
     
-    public Matrix ReducedRowEchelonForm(Matrix re) {
-        //start at mid bottow right and work to top left.
-        //add on a multiple to each row above to zero out.
-        return null;
-    }
-    
     public Matrix RowEchelonForm() {
-        //start at top left, work down in diagonal.
-        //if element is zero, swap with nonzero row below.
-        //for all rows below, add on multiple to create zero in that row.
         double[][] newdata = data;
         for(int r = 0; r < height; r++) {
             if(get(r, r) == 0) {
@@ -120,10 +122,20 @@ public class Matrix {
     }
     
     public Matrix inverse() {
-        //augment this matrix with identity on the right. 
-        //Then convert to RowEchelon
-        //Lastly, scrape the right half.
-        return null;
+        double[][] newdata = new double[height][width * 2];
+        for(int r = 0; r < height; r++) {
+            for(int c = 0; c < width; c++) {
+                newdata[r][c] = get(r, c);
+            }
+        }
+        newdata = new Matrix(newdata).RowEchelonForm().ReducedRowEchelonForm().data;
+        double[][] finaldata = new double[height][width];
+        for(int r = 0; r < height; r++) {
+            for(int c = 0; c < width; c++) {
+                finaldata[r][c] = newdata[r][c];
+            }
+        }
+        return new Matrix(finaldata);
     }
     
     public double trace() {

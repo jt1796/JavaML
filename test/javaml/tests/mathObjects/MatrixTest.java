@@ -108,6 +108,16 @@ public class MatrixTest {
     }
     
     @Test
+    public void reducedRowEchelon() {
+        double[][] testData = {{1, 7, 1}, {0, 1, -0.1}, {0, 0, 1}};
+        Matrix testMat = new Matrix(testData);
+        testMat = testMat.ReducedRowEchelonForm();
+        double[][] trueData = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+        Matrix trueMat = new Matrix(trueData);
+        assertEquals(testMat, trueMat);
+    }
+    
+    @Test
     public void testInverse() {
         double[][] testData = {{1, 3, 3},{1, 4, 3},{1, 3, 4}};
         Matrix testMat = new Matrix(testData);
