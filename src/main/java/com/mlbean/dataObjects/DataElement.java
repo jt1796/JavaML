@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package javaml.dataObjects;
+package com.mlbean.dataObjects;
 
-import javaml.mathObjects.Vector;
+import com.mlbean.mathObjects.Vector;
 
 /**
  *

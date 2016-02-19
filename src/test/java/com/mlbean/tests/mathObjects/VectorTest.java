@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package javaml.tests.mathObjects;
+package com.mlbean.tests.mathObjects;
 
-import javaml.mathObjects.Vector;
+import com.mlbean.mathObjects.Vector;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

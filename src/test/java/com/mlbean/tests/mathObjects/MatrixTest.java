@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package javaml.tests.mathObjects;
+package com.mlbean.tests.mathObjects;
 
-import javaml.mathObjects.Matrix;
+import com.mlbean.mathObjects.Matrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

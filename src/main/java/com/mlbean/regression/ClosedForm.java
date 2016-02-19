@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package javaml.regression;
+package com.mlbean.regression;
 
-import javaml.dataObjects.DataSet;
+import com.mlbean.dataObjects.DataSet;
 
 /**
  *
