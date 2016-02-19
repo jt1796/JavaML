@@ -127,12 +127,13 @@ public class Matrix {
             for(int c = 0; c < width; c++) {
                 newdata[r][c] = get(r, c);
             }
+            newdata[r][width + r] = 1;
         }
         newdata = new Matrix(newdata).RowEchelonForm().ReducedRowEchelonForm().data;
         double[][] finaldata = new double[height][width];
         for(int r = 0; r < height; r++) {
             for(int c = 0; c < width; c++) {
-                finaldata[r][c] = newdata[r][c];
+                finaldata[r][c] = newdata[r][c + width];
             }
         }
         return new Matrix(finaldata);
