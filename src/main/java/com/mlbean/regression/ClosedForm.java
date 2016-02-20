@@ -6,6 +6,8 @@
 package com.mlbean.regression;
 
 import com.mlbean.dataObjects.DataSet;
+import com.mlbean.mathObjects.Matrix;
+import com.mlbean.mathObjects.Vector;
 
 /**
  *
@@ -17,8 +19,17 @@ public class ClosedForm extends Regression {
         super(dataSet, iterations, stepSize);
     }
     
-    //TODO. Will need a matrix inverse operation.
     public void execute() {
-        
+        //(x transpose times x) inverse times x transpose.
+        //then mul y
+        Matrix x = this.dataSet.asMatrix();
+        Matrix x_transpose = x.transpose();
+        Vector y = this.dataSet.responseVector();
+        Matrix result = x_transpose.multiply(x).multiply(x_transpose).multiply(dataSet.responseVector());
+        double[] coeffData = new double[dataSet.getVarSpan()];
+        for(int i = 0; i < coeffData.length; i++) {
+            coeffData[i] = result.get(i, 0);
+        }
+        this.coeff = new Vector(dataSet.getVarSpan(), coeffData);
     }
 }

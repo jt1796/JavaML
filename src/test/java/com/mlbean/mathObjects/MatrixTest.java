@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mlbean.tests.mathObjects;
+package com.mlbean.mathObjects;
 
-import com.mlbean.mathObjects.Matrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

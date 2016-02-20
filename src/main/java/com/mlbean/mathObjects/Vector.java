@@ -69,4 +69,12 @@ public class Vector {
     public int getLength() {
         return length;
     }
+    
+    public String toString() {
+        String ret = "";
+        for (int i = 0; i < length; i++) {
+            ret += "\n[ " + get(i) + " ]";
+        }
+        return ret;
+    }
 }
