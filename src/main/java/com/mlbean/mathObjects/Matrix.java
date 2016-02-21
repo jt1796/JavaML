@@ -90,11 +90,10 @@ public class Matrix {
         int newheight = this.height;
         int dotprodlength = this.width;
         double[][] newdata = new double[newheight][newwidth];
-        int c = 0, r = 0, i = 0;
-        for(r = 0; r < newheight; r++) {
-            for(c = 0; c < newwidth; c++) {
-                int dotprod = 0;
-                for(i = 0; i < dotprodlength; i++) {
+        for(int r = 0; r < newheight; r++) {
+            for(int c = 0; c < newwidth; c++) {
+                double dotprod = 0;
+                for(int i = 0; i < dotprodlength; i++) {
                     dotprod += this.get(r, i) * matrix.get(i, c);
                 }
                 newdata[r][c] = dotprod;

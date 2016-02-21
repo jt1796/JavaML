@@ -106,6 +106,14 @@ public class MatrixTest {
     }
     
     @Test
+    public void testMatrixMultiplicationTwo() {
+        double[][] testData = {{1.4534883720930234, -0.19767441860465124}, {-0.1976744186046512, 0.03488372093023257}};
+        double[][] testDataTwo = {{1.0, 1.0, 1.0}, {3.0, 4.0, 10.0}};
+        double[][] prodData = {{0.860465116279070,0.662790697674418,-0.523255813953489},{-0.0930232558139535,-0.0581395348837209,0.151162790697674}};
+        assertEquals(new Matrix(prodData), new Matrix(testData).multiply(new Matrix(testDataTwo)));
+    }
+    
+    @Test
     public void testTrace() {
         double[][] testData = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
         Matrix testMat = new Matrix(testData);
