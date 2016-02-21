@@ -83,6 +83,9 @@ public class Matrix {
     }
     
     public Matrix multiply(Matrix matrix) {
+        if(this.getWidth() != matrix.getHeight()) {
+            throw new RuntimeException("matrix mismatch in dimension: " + this.height + "x" + this.width + " cannot multiply with a " + matrix.height + "x" + matrix.width);
+        }
         int newwidth = matrix.width;
         int newheight = this.height;
         int dotprodlength = this.width;
@@ -142,6 +145,9 @@ public class Matrix {
     }
     
     public Matrix inverse() {
+        if(height != width) {
+            throw new RuntimeException("not a square matrix: " + height + "x" + width);
+        }
         double[][] newdata = new double[height][width * 2];
         for(int r = 0; r < height; r++) {
             for(int c = 0; c < width; c++) {
@@ -168,8 +174,7 @@ public class Matrix {
     }
     
     public Matrix multiply(Vector vector) {
-        //TODO
-        return null;
+        return multiply(vector.asColumnMatrix());
     }
     
     public double get(int row, int col) {

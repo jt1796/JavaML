@@ -23,33 +23,43 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.mlbean.regression;
-
-import com.mlbean.dataObjects.DataSet;
-import com.mlbean.mathObjects.Matrix;
-import com.mlbean.mathObjects.Vector;
+package com.mlbean.mathObjects;
 
 /**
  *
  * @author John
  */
-public class ClosedForm extends Regression {
+public class GaussianDistribution implements Function {
     
-    public ClosedForm(DataSet dataSet, int iterations, double stepSize) {
-        super(dataSet, iterations, stepSize);
+    private double mean;
+    private double variance;
+    
+    public GaussianDistribution() {
+        mean = 0;
+        variance = 1;
     }
     
-    public void execute() {
-        //(x transpose times x) inverse times x transpose.
-        //then mul y
-        Matrix x = this.dataSet.asMatrix();
-        Matrix x_transpose = x.transpose();
-        Vector y = this.dataSet.responseVector();
-        Matrix result = x_transpose.multiply(x).inverse().multiply(x_transpose).multiply(dataSet.responseVector());
-        double[] coeffData = new double[dataSet.getVarSpan()];
-        for(int i = 0; i < coeffData.length; i++) {
-            coeffData[i] = result.get(i, 0);
-        }
-        this.coeff = new Vector(dataSet.getVarSpan(), coeffData);
+    public GaussianDistribution(double mean, double variance) {
+        this.mean = mean;
+        this.variance = variance;
     }
+
+    @Override
+    public double eval(double[] args) {
+        double factor = 1/(variance * Math.sqrt(2 * Math.PI));
+        double exp = -1 * (args[0] - mean) * (args[0] - mean);
+        exp /= (2 * variance * variance);
+        return Math.pow(Math.E, exp) * factor;
+    }
+
+    @Override
+    public double partialDerivative(double[] args, int var) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Vector gradient(double[] args) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
 }

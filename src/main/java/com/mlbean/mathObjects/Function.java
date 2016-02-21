@@ -29,6 +29,10 @@ package com.mlbean.mathObjects;
  *
  * @author John
  */
-public class Function {
+public interface Function {
+    
+    public double eval(double[] args);
+    public double partialDerivative(double[] args, int var);
+    public Vector gradient(double[] args);
     
 }

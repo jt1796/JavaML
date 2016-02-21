@@ -31,6 +31,7 @@ package com.mlbean.mathObjects;
  */
 public class Vector {
     private final Matrix backingMatrix;
+    private final Matrix colMatrix;
     private final int length;
     private final boolean isColumn;
     
@@ -41,12 +42,14 @@ public class Vector {
             data[i] = 0;
         }
         backingMatrix = new Matrix(1, length, data);
+        colMatrix = new Matrix(length, 1, data);
         isColumn = true;
     }
     
     public Vector(int length, double[] data) {
         this.length = length;
         backingMatrix = new Matrix(1, length, data);
+        colMatrix = new Matrix(length, 1, data);
         isColumn = true;
     }
     
@@ -88,6 +91,14 @@ public class Vector {
     
     public int getLength() {
         return length;
+    }
+    
+    public Matrix asColumnMatrix() {
+        return colMatrix;
+    }
+    
+    public Matrix asRowMatrix() {
+        return backingMatrix;
     }
     
     public String toString() {

@@ -70,7 +70,7 @@ public class DataSet implements Iterable<DataElement> {
     }
     
     public Matrix asMatrix() {
-        double[][] matData = new double[dataSize][data.size() + 1];
+        double[][] matData = new double[dataSize][numberOfIndependentsPlusBase];
         int ctr = 0;
         for(DataElement d : this) {
             for(int c = 0; c < numberOfIndependentsPlusBase; c++) {
