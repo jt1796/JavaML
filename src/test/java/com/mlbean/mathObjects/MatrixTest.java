@@ -27,12 +27,15 @@ package com.mlbean.mathObjects;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
+import com.mlbean.testObjects.*;
 
 /**
  *
  * @author John
  */
 public class MatrixTest {
+    
+
     
     public MatrixTest() {
     }
@@ -174,5 +177,16 @@ public class MatrixTest {
         Matrix mat = new Matrix(testData);
         Matrix matTwo = new Matrix(testDataTwo);
         assertFalse(mat.equals(matTwo));
+    }
+    
+    @Test
+    public void testEmptyMatrixMult() {
+        assert(mathObjects.emptyMatrix.multiply(mathObjects.emptyMatrix).equals(mathObjects.emptyMatrix));
+    }
+    
+    @Test
+    public void testNegativesAndFloats() {
+        Matrix result = mathObjects.floatsAndNegatives.multiply(mathObjects.floatsAndNegatives);
+        Matrix actual = new Matrix(new double[][]{{3.1290468e9,-9.093927e10},{-3.441191e6,3.22902908e9}});
     }
 }

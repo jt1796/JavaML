@@ -46,9 +46,13 @@ public class Matrix {
     }
     
     public Matrix(double[][] data) {
-        height = data.length;
-        width = data[0].length;
         this.data = data;
+        height = data.length;
+        if(0 == height) {
+            width = 0;
+        } else {
+            width = data[0].length;
+        }
     }
     
     public Matrix(int height, int width, double[] data) {
