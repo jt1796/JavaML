@@ -25,43 +25,30 @@
  */
 package com.mlbean.dataObjects;
 
+import com.mlbean.mathObjects.Vector;
+
 /**
  *
  * @author John
  */
-public class DataElement {
-    private String nominalValue = null;
-    private double numericValue = 0;
-    private boolean numeric = false;
+public class DataRow {
+    private double response = 0;
+    double[] independents = null;
     
-    public DataElement(String val) {
-        this.nominalValue = val;
-        this.numeric = false;
+    public DataRow(double response, double[] independents) {
+        this.response = response;
+        this.independents = independents;
     }
     
-    public DataElement(double val) {
-        this.numericValue = val;
-        this.numeric = true;
+    public double getResponse() {
+        return response;
     }
     
-    public String dataType() {
-        if(numeric) {
-            return "numeric";
-        }
-        return "nominal";
+    public double getIth(int i) {
+        return independents[i];
     }
     
-    public String getNominalValue() {
-        if (numeric) {
-            throw new RuntimeException("This is not a nominal DataElement");
-        }
-        return nominalValue;
-    }
-    
-    public double getNumericValue() {
-        if(!numeric) {
-            throw new RuntimeException("This is not a numeric DataElement");
-        }
-        return numericValue;
+    public Vector independenceAsVector() {
+        return new Vector(independents.length, independents);
     }
 }

@@ -34,15 +34,16 @@ import java.util.Iterator;
  *
  * @author John
  */
-public class DataSet implements Iterable<DataElement> {
-    LinkedList<DataElement> data = null;
-    int dataSize;
-    int numberOfIndependentsPlusBase;
+public class DataSet implements Iterable<DataRow> {
+    DataHeader header = null;
+    LinkedList<DataRow> data = null;
     
-    public DataSet(int n) {
-        this.data = new LinkedList<>();
-        dataSize = 0;
-        numberOfIndependentsPlusBase = n + 1;
+    public DataSet(DataHeader hdr) {
+        this.header = hdr;
+    }
+    
+    public void addRow() {
+        
     }
     
     public void addData(double response, double[] data) {
@@ -52,27 +53,23 @@ public class DataSet implements Iterable<DataElement> {
         double[] extendedData = new double[data.length + 1];
         extendedData[0] = 1;
         System.arraycopy(data, 0, extendedData, 1, data.length);
-        DataElement element = new DataElement(response, extendedData);
+        DataRow element = new DataRow(response, extendedData);
         this.data.add(element);
         dataSize++;
     }
     
-    public Iterator<DataElement> iterator() {
+    public Iterator<DataRow> iterator() {
         return data.iterator();
     }
     
-    public int getVarSpan() {
-        return numberOfIndependentsPlusBase;
-    }
-    
-    public int getDataSize() {
-        return dataSize;
+    public int getDataWidth() {
+        return header.numAttributes();
     }
     
     public Matrix asMatrix() {
         double[][] matData = new double[dataSize][numberOfIndependentsPlusBase];
         int ctr = 0;
-        for(DataElement d : this) {
+        for(DataRow d : this) {
             for(int c = 0; c < numberOfIndependentsPlusBase; c++) {
                 matData[ctr][c] = d.getIth(c);
             }
@@ -84,7 +81,7 @@ public class DataSet implements Iterable<DataElement> {
     public Vector responseVector() {
         double[] vecData = new double[dataSize];
         int i = 0;
-        for(DataElement row : this) {
+        for(DataRow row : this) {
             vecData[i++] = row.getResponse();
         }
         return new Vector(dataSize, vecData);

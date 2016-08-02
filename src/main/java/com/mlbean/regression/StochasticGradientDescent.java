@@ -25,7 +25,7 @@
  */
 package com.mlbean.regression;
 
-import com.mlbean.dataObjects.DataElement;
+import com.mlbean.dataObjects.DataRow;
 import com.mlbean.dataObjects.DataSet;
 import com.mlbean.mathObjects.Vector;
 
@@ -42,7 +42,7 @@ public class StochasticGradientDescent extends Regression {
     public void execute() {
         double[] t_coeff = new double[dataSet.getVarSpan()];
         for(int i = 0; i < iterations; i++) {
-            for(DataElement dataRow : dataSet) {
+            for(DataRow dataRow : dataSet) {
                 for(int omega = 0; omega < t_coeff.length; omega++) {
                     t_coeff[omega] = t_coeff[omega] - stepSize * dataRow.getIth(omega) * 
                             (dataRow.independenceAsVector().dotProduct(new Vector(t_coeff.length, t_coeff)) - dataRow.getResponse());

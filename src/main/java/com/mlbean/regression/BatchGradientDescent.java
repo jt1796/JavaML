@@ -25,7 +25,7 @@
  */
 package com.mlbean.regression;
 
-import com.mlbean.dataObjects.DataElement;
+import com.mlbean.dataObjects.DataRow;
 import com.mlbean.dataObjects.DataSet;
 import com.mlbean.mathObjects.Vector;
 
@@ -45,7 +45,7 @@ public class BatchGradientDescent extends Regression {
             double[] newCoeff = new double[coeff.getLength()];
             for(int omega = 0; omega < coeff.getLength(); omega++) {
                 double sum = 0;
-                for(DataElement dataRow : dataSet) {
+                for(DataRow dataRow : dataSet) {
                     sum += (coeff.dotProduct(dataRow.independenceAsVector()) - dataRow.getResponse()) * dataRow.getIth(omega) * stepSize;
                 }
                 newCoeff[omega] = coeff.get(omega) - sum;
