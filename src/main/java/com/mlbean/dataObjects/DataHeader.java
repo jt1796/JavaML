@@ -53,13 +53,17 @@ public class DataHeader {
             if (!("nominal".equals(type) || "numeric".equals(type))) {
                 throw new RuntimeException("Invalid type for attribute with name: " + name);
             }
-            indexLookup.put(name, i);
+            indexLookup.put(name, i / 2);
             header.add(new DataSpot(namesAndTypes[i], namesAndTypes[i + 1]));
         }
     }
     
     public int numAttributes() {
         return header.size();
+    }
+    
+    public int getAttributeIndexByName(String name) {
+        return indexLookup.get(name);
     }
     
     public String getAttributeTypeByName(String name) {

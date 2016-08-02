@@ -69,5 +69,35 @@ public class DataHeaderTest {
         }
         fail("exception was not thrown");
     }
+    
+    @Test
+    public void testNumAttributes() {
+        DataHeader dataHeader = new DataHeader("age", "nominal", "weight", "numeric");
+        assertEquals(2, dataHeader.numAttributes());
+    }
+    
+    @Test
+    public void testGetIndexByName() {
+        DataHeader dataHeader = new DataHeader("weight", "nominal", "height", "nominal", "age", "numeric");
+        assertEquals(dataHeader.getAttributeIndexByName("age"), 2);
+    }
+    
+    @Test
+    public void testGetTypeByName() {
+        DataHeader dataHeader = new DataHeader("weight", "nominal", "height", "nominal", "age", "numeric");
+        assertEquals(dataHeader.getAttributeTypeByName("age"), "numeric");
+    }
+    
+    @Test
+    public void testGetNameByIndex() {
+        DataHeader dataHeader = new DataHeader("weight", "nominal", "height", "nominal", "age", "numeric");
+        assertEquals(dataHeader.getAttributeNameByIndex(2), "age");
+    }
+    
+    @Test
+    public void testGetTypeByIndex() {
+        DataHeader dataHeader = new DataHeader("weight", "nominal", "height", "nominal", "age", "numeric");
+        assertEquals(dataHeader.getAttributeTypeByIndex(2), "numeric");
+    }
 
 }
