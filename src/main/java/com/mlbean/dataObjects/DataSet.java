@@ -45,6 +45,7 @@ public class DataSet implements Iterable<DataRow> {
         }
         this.header = hdr;
         this.labelCol = label;
+        data = new ArrayList<>();
     }
     
     public void addRow(DataRow row) {
@@ -54,7 +55,7 @@ public class DataSet implements Iterable<DataRow> {
         String labelType = header.getAttributeTypeByName(labelCol);
         String rowLabelType = row.getLabel().dataType();
         if (!labelType.equals(rowLabelType)) {
-            throw new RuntimeException("this row contains a type mismatch in the label");
+            throw new RuntimeException("this row has a type mismatch in the label");
         }
         int nonLabelIndex = 0;
         for(int i = 0; i < header.numAttributes(); i++) {
@@ -62,7 +63,7 @@ public class DataSet implements Iterable<DataRow> {
             if(!currentAttributeName.equals(labelCol)) {
                 String currentNonLabelType = row.getNonLabel(nonLabelIndex).dataType();
                 if(!currentNonLabelType.equals(header.getAttributeTypeByIndex(i))) {
-                    throw new RuntimeException("");
+                    throw new RuntimeException("this row has a type mismatch in " + header.getAttributeNameByIndex(i));
                 }
                 nonLabelIndex++;
             }
