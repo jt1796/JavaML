@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, John
+ * Copyright (c) 2016, tompk
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,40 +26,27 @@
 package com.mlbean.dataObjects;
 
 import com.mlbean.mathObjects.Vector;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
- * @author John
+ * @author tompk
  */
-public class DataRow {
-    private DataElement[] nonLabels = null;
-    private DataElement label = null;
+public class DataSetTest {
     
-    public DataRow(DataElement[] nonLabels, DataElement label) {
-        this.nonLabels = nonLabels;
-        this.label = label;
+    DataRow row = null;
+    DataHeader header = null;
+    
+    public DataSetTest() {
+        DataElement[] elements = {new DataElement(1.23), new DataElement("car")};
+        row = new DataRow(elements, new DataElement("high"));
+        header = new DataHeader("price", "numeric", "vehicle type", "nominal", "quality", "nominal");
+    }
+   
+    @Test
+    public void testLabelsAsVector() {
+        System.out.println("labelsAsVector");
     }
     
-    public DataElement getLabel() {
-        return label;
-    }
-    
-    public DataElement getNonLabel(int i) {
-        return nonLabels[i];
-    }
-    
-    public int numAttributes() {
-        return nonLabels.length + 1;
-    }
-    
-    public Vector nonLabelsAsVector() {
-        double[] numericArray = new double[nonLabels.length];
-        for(int i = 0; i < numericArray.length; i++) {
-            if(!"numeric".equals(nonLabels[i].dataType())) {
-                throw new RuntimeException("This DataRow contains nominal data");
-            }
-            numericArray[i] = nonLabels[i].getNumericValue();
-        }
-        return new Vector(nonLabels.length, numericArray);
-    }
 }

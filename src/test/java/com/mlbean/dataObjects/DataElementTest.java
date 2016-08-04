@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, John
+ * Copyright (c) 2016, tompk
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,41 +25,49 @@
  */
 package com.mlbean.dataObjects;
 
-import com.mlbean.mathObjects.Vector;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
- * @author John
+ * @author tompk
  */
-public class DataRow {
-    private DataElement[] nonLabels = null;
-    private DataElement label = null;
+public class DataElementTest {
     
-    public DataRow(DataElement[] nonLabels, DataElement label) {
-        this.nonLabels = nonLabels;
-        this.label = label;
+    @Test
+    public void testNumericIdentifiesAsNumeric() {
+        DataElement element = new DataElement(2.33);
+        assertEquals(element.getNumericValue(), 2.33, 0.001);
     }
     
-    public DataElement getLabel() {
-        return label;
+    @Test
+    public void testNominalIdentifiesAsNominal() {
+        DataElement element = new DataElement("blue");
+        assertEquals(element.getNominalValue(), "blue");
     }
     
-    public DataElement getNonLabel(int i) {
-        return nonLabels[i];
-    }
-    
-    public int numAttributes() {
-        return nonLabels.length + 1;
-    }
-    
-    public Vector nonLabelsAsVector() {
-        double[] numericArray = new double[nonLabels.length];
-        for(int i = 0; i < numericArray.length; i++) {
-            if(!"numeric".equals(nonLabels[i].dataType())) {
-                throw new RuntimeException("This DataRow contains nominal data");
-            }
-            numericArray[i] = nonLabels[i].getNumericValue();
+    @Test
+    public void testErrorOnNominalValue() {
+        DataElement element = new DataElement(1.22);
+        try {
+            element.getNominalValue();
+        } catch(Exception e) {
+            assertEquals(e.getMessage(), "This is not a nominal DataElement");
+            return;
         }
-        return new Vector(nonLabels.length, numericArray);
+        fail("no exception was thrown");
     }
+    
+    @Test
+    public void testErrorOnNumericValue() {
+        DataElement element = new DataElement("green");
+        try {
+            element.getNumericValue();
+        } catch(Exception e) {
+            assertEquals(e.getMessage(), "This is not a numeric DataElement");
+            return;
+        }
+        fail("no exception was thrown");
+    }
+    
 }

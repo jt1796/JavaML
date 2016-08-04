@@ -27,7 +27,6 @@ package com.mlbean.dataObjects;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  *
@@ -60,6 +59,10 @@ public class DataHeader {
     
     public int numAttributes() {
         return header.size();
+    }
+    
+    public boolean containsAttribute(String name) {
+        return indexLookup.containsKey(name);
     }
     
     public int getAttributeIndexByName(String name) {
