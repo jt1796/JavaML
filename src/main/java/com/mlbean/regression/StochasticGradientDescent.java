@@ -39,17 +39,23 @@ public class StochasticGradientDescent extends Regression {
         super(dataSet, iterations, stepSize);
     }
     
-    //will need to 'augment' with a 1. 
     public void execute() {
-        double[] t_coeff = new double[dataSet.getDataWidth()];
+        double coeff_zero = 0;
+        double[] t_coeff = new double[dataSet.getDataWidth() - 1];
         for(int i = 0; i < iterations; i++) {
             for(DataRow dataRow : dataSet) {
+                coeff_zero -= stepSize * (modDotProduct(coeff_zero, t_coeff, dataRow) - dataRow.getLabel().getNumericValue());
                 for(int omega = 0; omega < t_coeff.length; omega++) {
                     t_coeff[omega] = t_coeff[omega] - stepSize * dataRow.getNonLabel(omega).getNumericValue() * 
-                            (dataRow.nonLabelsAsVector().dotProduct(new Vector(t_coeff.length, t_coeff)) - dataRow.getLabel().getNumericValue());
+                            (modDotProduct(coeff_zero, t_coeff, dataRow) - dataRow.getLabel().getNumericValue());
                 }
             }
         }
-        coeff = new Vector(t_coeff.length, t_coeff);
+        double[] fullCoeffs = new double[dataSet.getDataWidth()];
+        fullCoeffs[0] = coeff_zero;
+        for(int i = 1; i < fullCoeffs.length; i++) {
+            fullCoeffs[i] = t_coeff[i - 1];
+        }
+        coeff = new Vector(fullCoeffs.length, fullCoeffs);
     }
 }

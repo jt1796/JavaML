@@ -40,16 +40,29 @@ public class ClosedForm extends Regression {
     }
     
     public void execute() {
-        //(x transpose times x) inverse times x transpose.
-        //then mul y
-        Matrix x = this.dataSet.asMatrix();
+        //need to augment the matrix with ones.
+        Matrix x = this.dataSet.nonLabelsAsMatrix();
+        x = this.augmentMatrixWithOnes(x);
         Matrix x_transpose = x.transpose();
-        Vector y = this.dataSet.responseVector();
-        Matrix result = x_transpose.multiply(x).inverse().multiply(x_transpose).multiply(dataSet.responseVector());
-        double[] coeffData = new double[dataSet.getVarSpan()];
+        Vector y = this.dataSet.labelsAsVector();
+        Matrix result = x_transpose.multiply(x).inverse().multiply(x_transpose).multiply(dataSet.labelsAsVector());
+        double[] coeffData = new double[dataSet.getDataWidth()];
         for(int i = 0; i < coeffData.length; i++) {
             coeffData[i] = result.get(i, 0);
         }
-        this.coeff = new Vector(dataSet.getVarSpan(), coeffData);
+        this.coeff = new Vector(dataSet.getDataWidth(), coeffData);
+    }
+    
+    private Matrix augmentMatrixWithOnes(Matrix mat) {
+        int width = mat.getWidth() + 1;
+        int height = mat.getHeight();
+        double[][] newMatData = new double[height][width];
+        for(int i = 0; i < height; i++) {
+            newMatData[i][0] = 1;
+            for(int j = 1; j < width; j++) {
+                newMatData[i][j] = mat.get(i, j - 1);
+            }
+        }
+        return new Matrix(newMatData);
     }
 }

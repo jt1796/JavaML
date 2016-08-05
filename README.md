@@ -3,5 +3,4 @@
 # MLBean
 
 TODO:
-Increase tests before adding anything new
-Naive Bayes classifier
+Decision Tree Classifier

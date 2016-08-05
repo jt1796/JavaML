@@ -25,6 +25,7 @@
  */
 package com.mlbean.regression;
 
+import com.mlbean.dataObjects.DataRow;
 import com.mlbean.dataObjects.DataSet;
 import com.mlbean.mathObjects.Vector;
 
@@ -51,5 +52,9 @@ public abstract class Regression {
             throw new RuntimeException("Must call execute() before this call");
         }
         return coeff;
+    }
+    
+    protected double modDotProduct(double coeff_zero, double[] t_coeff, DataRow datarow) {
+        return coeff_zero + new Vector(t_coeff.length, t_coeff).dotProduct(datarow.nonLabelsAsVector());
     }
 }
