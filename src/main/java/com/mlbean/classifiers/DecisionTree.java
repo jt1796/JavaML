@@ -25,10 +25,30 @@
  */
 package com.mlbean.classifiers;
 
+import com.mlbean.dataObjects.DataSet;
+import java.util.HashMap;
+
 /**
  *
  * @author John
  */
 public class DecisionTree {
     
+    private double entropy(DataSet data) {
+        return 0.0;
+    }
+    
+    private double infoGain(DataSet data, String attribute) {
+        double entropy = entropy(data);
+        return 0.0;
+    }
+    
+    private HashMap<String, Integer> marshalNominal(DataSet data, String attribute) {
+        //loop through every dataRow. 
+        return null;
+    }
+    
+    private HashMap<Double, Integer> marshalNumeric(DataSet data, String attribute) {
+        return null;
+    }
 }
