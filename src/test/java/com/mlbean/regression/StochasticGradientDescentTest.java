@@ -25,6 +25,9 @@
  */
 package com.mlbean.regression;
 
+import com.mlbean.dataObjects.DataElement;
+import com.mlbean.dataObjects.DataHeader;
+import com.mlbean.dataObjects.DataRow;
 import com.mlbean.dataObjects.DataSet;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -40,10 +43,11 @@ public class StochasticGradientDescentTest {
 
     @Test
     public void TwoDimLinear() {
-        DataSet set = new DataSet(1);
-        set.addData(6, new double[]{3});
-        set.addData(8, new double[]{4});
-        set.addData(20, new double[]{10});
+        DataHeader header = new DataHeader("input", "numeric", "output", "numeric");
+        DataSet set = new DataSet(header, "output");
+        set.addRow(new DataRow(new DataElement[]{new DataElement(3)}, new DataElement(6)));
+        set.addRow(new DataRow(new DataElement[]{new DataElement(5)}, new DataElement(10)));
+        set.addRow(new DataRow(new DataElement[]{new DataElement(10)}, new DataElement(20)));
         Regression stoch = new StochasticGradientDescent(set, 10000, .01);
         stoch.execute();
         assertEquals(2, stoch.getCoeffs().get(1), 0.01);
@@ -51,12 +55,13 @@ public class StochasticGradientDescentTest {
     
     @Test
     public void FourDimNoisy() {
-        DataSet set = new DataSet(4);
-        set.addData(24 + 3, new double[]{1, 1, 1, 1});
-        set.addData(48 + 3, new double[]{2, 2, 2, 2});
-        set.addData(53 + 3, new double[]{3, 1, 6, 1});
-        set.addData(150 + 3, new double[]{12, -3, 3, 8});
-        set.addData(672 + 3, new double[]{7, 19, 23, 51});
+        DataHeader header = new DataHeader("input1", "numeric", "input2", "numeric", "input3", "numeric", "input4", "numeric", "output", "numeric");
+        DataSet set = new DataSet(header, "output");
+        set.addRow(new DataRow(new DataElement[]{new DataElement(1), new DataElement(1), new DataElement(1), new DataElement(1)}, new DataElement(24 + 3)));
+        set.addRow(new DataRow(new DataElement[]{new DataElement(2), new DataElement(2), new DataElement(2), new DataElement(2)}, new DataElement(48 + 3)));
+        set.addRow(new DataRow(new DataElement[]{new DataElement(3), new DataElement(1), new DataElement(6), new DataElement(1)}, new DataElement(53 + 3)));
+        set.addRow(new DataRow(new DataElement[]{new DataElement(12), new DataElement(-3), new DataElement(3), new DataElement(8)}, new DataElement(150 + 3)));
+        set.addRow(new DataRow(new DataElement[]{new DataElement(7), new DataElement(19), new DataElement(23), new DataElement(51)}, new DataElement(672 + 3)));
         Regression stoch = new StochasticGradientDescent(set, 80000, .001);
         stoch.execute();
         assertEquals(3, stoch.getCoeffs().get(0), 0.01);

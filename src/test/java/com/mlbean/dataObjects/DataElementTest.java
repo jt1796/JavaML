@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, John
+ * Copyright (c) 2016, tompk
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,43 +25,49 @@
  */
 package com.mlbean.dataObjects;
 
+import org.junit.Test;
+import static org.junit.Assert.*;
+
 /**
  *
- * @author John
+ * @author tompk
  */
-public class DataElement {
-    private String nominalValue = null;
-    private double numericValue = 0;
-    private boolean numeric = false;
+public class DataElementTest {
     
-    public DataElement(String val) {
-        this.nominalValue = val;
-        this.numeric = false;
+    @Test
+    public void testNumericIdentifiesAsNumeric() {
+        DataElement element = new DataElement(2.33);
+        assertEquals(element.getNumericValue(), 2.33, 0.001);
     }
     
-    public DataElement(double val) {
-        this.numericValue = val;
-        this.numeric = true;
+    @Test
+    public void testNominalIdentifiesAsNominal() {
+        DataElement element = new DataElement("blue");
+        assertEquals(element.getNominalValue(), "blue");
     }
     
-    public String dataType() {
-        if(numeric) {
-            return "numeric";
+    @Test
+    public void testErrorOnNominalValue() {
+        DataElement element = new DataElement(1.22);
+        try {
+            element.getNominalValue();
+        } catch(Exception e) {
+            assertEquals(e.getMessage(), "This is not a nominal DataElement");
+            return;
         }
-        return "nominal";
+        fail("no exception was thrown");
     }
     
-    public String getNominalValue() {
-        if (numeric) {
-            throw new RuntimeException("This is not a nominal DataElement");
+    @Test
+    public void testErrorOnNumericValue() {
+        DataElement element = new DataElement("green");
+        try {
+            element.getNumericValue();
+        } catch(Exception e) {
+            assertEquals(e.getMessage(), "This is not a numeric DataElement");
+            return;
         }
-        return nominalValue;
+        fail("no exception was thrown");
     }
     
-    public double getNumericValue() {
-        if(!numeric) {
-            throw new RuntimeException("This is not a numeric DataElement");
-        }
-        return numericValue;
-    }
 }

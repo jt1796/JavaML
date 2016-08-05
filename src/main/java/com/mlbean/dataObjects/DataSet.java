@@ -27,66 +27,78 @@ package com.mlbean.dataObjects;
 
 import com.mlbean.mathObjects.Matrix;
 import com.mlbean.mathObjects.Vector;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
  *
  * @author John
  */
-public class DataSet implements Iterable<DataElement> {
-    LinkedList<DataElement> data = null;
-    int dataSize;
-    int numberOfIndependentsPlusBase;
+public class DataSet implements Iterable<DataRow> {
+    DataHeader header = null;
+    private String labelCol = null;
+    ArrayList<DataRow> data = null;
     
-    public DataSet(int n) {
-        this.data = new LinkedList<>();
-        dataSize = 0;
-        numberOfIndependentsPlusBase = n + 1;
-    }
-    
-    public void addData(double response, double[] data) {
-        if(data.length + 1 != numberOfIndependentsPlusBase) {
-            throw new RuntimeException("Wrong number of inputs");
+    public DataSet(DataHeader hdr, String label) {
+        if (!hdr.containsAttribute(label)) {
+           throw new RuntimeException("the label does not exist"); 
         }
-        double[] extendedData = new double[data.length + 1];
-        extendedData[0] = 1;
-        System.arraycopy(data, 0, extendedData, 1, data.length);
-        DataElement element = new DataElement(response, extendedData);
-        this.data.add(element);
-        dataSize++;
+        this.header = hdr;
+        this.labelCol = label;
+        data = new ArrayList<>();
     }
     
-    public Iterator<DataElement> iterator() {
+    public void addRow(DataRow row) {
+        if(header.numAttributes() != row.numAttributes()) {
+            throw new RuntimeException("this row does not have the right number of attributes");
+        }
+        String labelType = header.getAttributeTypeByName(labelCol);
+        String rowLabelType = row.getLabel().dataType();
+        if (!labelType.equals(rowLabelType)) {
+            throw new RuntimeException("this row has a type mismatch in the label");
+        }
+        int nonLabelIndex = 0;
+        for(int i = 0; i < header.numAttributes(); i++) {
+            String currentAttributeName = header.getAttributeNameByIndex(i);
+            if(!currentAttributeName.equals(labelCol)) {
+                String currentNonLabelType = row.getNonLabel(nonLabelIndex).dataType();
+                if(!currentNonLabelType.equals(header.getAttributeTypeByIndex(i))) {
+                    throw new RuntimeException("this row has a type mismatch in " + header.getAttributeNameByIndex(i));
+                }
+                nonLabelIndex++;
+            }
+        }
+        data.add(row);
+    }
+    
+    public Iterator<DataRow> iterator() {
         return data.iterator();
     }
     
-    public int getVarSpan() {
-        return numberOfIndependentsPlusBase;
+    public int getDataWidth() {
+        return header.numAttributes();
     }
     
-    public int getDataSize() {
-        return dataSize;
+    public int getDataHeight() {
+        return data.size();
     }
     
-    public Matrix asMatrix() {
-        double[][] matData = new double[dataSize][numberOfIndependentsPlusBase];
-        int ctr = 0;
-        for(DataElement d : this) {
-            for(int c = 0; c < numberOfIndependentsPlusBase; c++) {
-                matData[ctr][c] = d.getIth(c);
+    public Matrix nonLabelsAsMatrix() {
+        double[][] matData = new double[getDataHeight()][getDataWidth() - 1];
+        for(int r = 0; r < getDataHeight(); r++) {
+            Vector row = data.get(r).nonLabelsAsVector();
+            for(int c = 0; c < getDataWidth() - 1; c++) {
+                matData[r][c] = row.get(c);
             }
-            ctr++;
         }
         return new Matrix(matData);
     }
     
-    public Vector responseVector() {
-        double[] vecData = new double[dataSize];
-        int i = 0;
-        for(DataElement row : this) {
-            vecData[i++] = row.getResponse();
+    public Vector labelsAsVector() {
+        double[] vecData = new double[getDataHeight()];
+        for(int i = 0; i < getDataHeight(); i++) {
+            vecData[i] = data.get(i).getLabel().getNumericValue();
         }
-        return new Vector(dataSize, vecData);
+        return new Vector(getDataHeight(), vecData);
     }
 }

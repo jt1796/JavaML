@@ -25,43 +25,41 @@
  */
 package com.mlbean.dataObjects;
 
+import com.mlbean.mathObjects.Vector;
+
 /**
  *
  * @author John
  */
-public class DataElement {
-    private String nominalValue = null;
-    private double numericValue = 0;
-    private boolean numeric = false;
+public class DataRow {
+    private DataElement[] nonLabels = null;
+    private DataElement label = null;
     
-    public DataElement(String val) {
-        this.nominalValue = val;
-        this.numeric = false;
+    public DataRow(DataElement[] nonLabels, DataElement label) {
+        this.nonLabels = nonLabels;
+        this.label = label;
     }
     
-    public DataElement(double val) {
-        this.numericValue = val;
-        this.numeric = true;
+    public DataElement getLabel() {
+        return label;
     }
     
-    public String dataType() {
-        if(numeric) {
-            return "numeric";
+    public DataElement getNonLabel(int i) {
+        return nonLabels[i];
+    }
+    
+    public int numAttributes() {
+        return nonLabels.length + 1;
+    }
+    
+    public Vector nonLabelsAsVector() {
+        double[] numericArray = new double[nonLabels.length];
+        for(int i = 0; i < numericArray.length; i++) {
+            if(!"numeric".equals(nonLabels[i].dataType())) {
+                throw new RuntimeException("This DataRow contains nominal data");
+            }
+            numericArray[i] = nonLabels[i].getNumericValue();
         }
-        return "nominal";
-    }
-    
-    public String getNominalValue() {
-        if (numeric) {
-            throw new RuntimeException("This is not a nominal DataElement");
-        }
-        return nominalValue;
-    }
-    
-    public double getNumericValue() {
-        if(!numeric) {
-            throw new RuntimeException("This is not a numeric DataElement");
-        }
-        return numericValue;
+        return new Vector(nonLabels.length, numericArray);
     }
 }

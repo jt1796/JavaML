@@ -25,7 +25,7 @@
  */
 package com.mlbean.regression;
 
-import com.mlbean.dataObjects.DataElement;
+import com.mlbean.dataObjects.DataRow;
 import com.mlbean.dataObjects.DataSet;
 import com.mlbean.mathObjects.Vector;
 
@@ -40,17 +40,33 @@ public class BatchGradientDescent extends Regression {
     }
     
     public void execute() {
-        coeff = new Vector(dataSet.getVarSpan());
+        double coeff_zero = 0;
+        double[] t_coeff = new double[dataSet.getDataWidth() - 1];
         for(int i = 0; i < iterations; i++) {
-            double[] newCoeff = new double[coeff.getLength()];
-            for(int omega = 0; omega < coeff.getLength(); omega++) {
-                double sum = 0;
-                for(DataElement dataRow : dataSet) {
-                    sum += (coeff.dotProduct(dataRow.independenceAsVector()) - dataRow.getResponse()) * dataRow.getIth(omega) * stepSize;
-                }
-                newCoeff[omega] = coeff.get(omega) - sum;
+            double newCoeffZero = 0;
+            double[] newCoeff = new double[t_coeff.length];
+            double sum = 0;
+            for(DataRow dataRow : dataSet) {
+                double label = dataRow.getLabel().getNumericValue();
+                sum += stepSize * (modDotProduct(coeff_zero, t_coeff, dataRow) - label);
             }
-            coeff = new Vector(dataSet.getVarSpan(), newCoeff);
+            newCoeffZero = coeff_zero - sum;
+            for(int omega = 0; omega < t_coeff.length; omega++) {
+                sum = 0;
+                for(DataRow dataRow : dataSet) {
+                    double label = dataRow.getLabel().getNumericValue();
+                    sum += stepSize * (modDotProduct(coeff_zero, t_coeff, dataRow) - label) * dataRow.getNonLabel(omega).getNumericValue();
+                }
+                newCoeff[omega] = t_coeff[omega] - sum;
+            }
+            coeff_zero = newCoeffZero;
+            t_coeff = newCoeff;
         }
+        double[] fullCoeffs = new double[dataSet.getDataWidth()];
+        fullCoeffs[0] = coeff_zero;
+        for(int i = 1; i < fullCoeffs.length; i++) {
+            fullCoeffs[i] = t_coeff[i - 1];
+        }
+        coeff = new Vector(fullCoeffs.length, fullCoeffs);
     }
 }
