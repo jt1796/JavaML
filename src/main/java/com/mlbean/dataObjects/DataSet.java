@@ -28,6 +28,7 @@ package com.mlbean.dataObjects;
 import com.mlbean.mathObjects.Matrix;
 import com.mlbean.mathObjects.Vector;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 
 /**
@@ -38,6 +39,7 @@ public class DataSet implements Iterable<DataRow> {
     DataHeader header = null;
     private String labelCol = null;
     ArrayList<DataRow> data = null;
+    String[] orderedNonLabels = null;
     
     public DataSet(DataHeader hdr, String label) {
         if (!hdr.containsAttribute(label)) {
@@ -45,7 +47,16 @@ public class DataSet implements Iterable<DataRow> {
         }
         this.header = hdr;
         this.labelCol = label;
+        orderedNonLabels = new String[header.numAttributes() - 1];
         data = new ArrayList<>();
+        int j = 0;
+        for(int i = 0; i < header.numAttributes(); i++) {
+            String name = header.getAttributeNameByIndex(i);
+            if(!name.equals(label)) {
+                orderedNonLabels[j] = name;
+                j++;
+            }
+        }
     }
     
     public void addRow(DataRow row) {
@@ -100,5 +111,63 @@ public class DataSet implements Iterable<DataRow> {
             vecData[i] = data.get(i).getLabel().getNumericValue();
         }
         return new Vector(getDataHeight(), vecData);
+    }
+    
+    public DataSet filter(String attribute, String className) {
+        return null;
+    }
+    
+    public DataSet filter(String attribute, double threshold) {
+        return null;
+    }
+    
+    public String toString() {
+        int tableWidth = 0;
+        String table = "";
+        int[] colWidths = new int[header.numAttributes()];
+        for(int i = 0; i < header.numAttributes() - 1; i++) {
+            colWidths[i] = orderedNonLabels[i].length();
+        }
+        colWidths[header.numAttributes() - 1] = this.labelCol.length();
+        for(DataRow d : this) {
+            for(int i = 0; i < colWidths.length - 1; i++) {
+                colWidths[i] = Math.max(colWidths[i], d.getNonLabel(i).toString().length());
+            }
+            colWidths[colWidths.length - 1] = Math.max(colWidths[colWidths.length - 1], d.getLabel().toString().length());
+        }
+        for(int i : colWidths) {
+            tableWidth += i + 3;
+        }
+        tableWidth -= 3;
+        String prefix = "";
+        for(int i = 0; i < colWidths.length - 1; i++) {
+            table += prefix + rightPad(orderedNonLabels[i], colWidths[i]);
+            prefix = " | ";
+        }
+        table += prefix + rightPad(labelCol, colWidths[orderedNonLabels.length - 1]);
+        table += "\n";
+        for(int i = 0; i < tableWidth; i++) {
+            table += "=";
+        }
+        table += "\n";
+        for(DataRow d : this) {
+            prefix = "";
+            for(int i = 0; i < colWidths.length - 1; i++) {
+                table += prefix + rightPad(d.getNonLabel(i).toString(), colWidths[i]);
+                prefix = " | ";
+            }
+            table += prefix + rightPad(d.getLabel().toString(), colWidths[colWidths.length - 1]);
+            table += "\n";
+        }
+        return table;
+    }
+    
+    private String rightPad(String word, int length) {
+        int diff = length - word.length();
+        String spaces = "";
+        for(int i = 0 ; i < diff; i++) {
+            spaces += " ";
+        }
+        return word + spaces;
     }
 }

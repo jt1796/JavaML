@@ -56,6 +56,8 @@ public class DataSetTest {
         DataSet data = new DataSet(header, "price");
         data.addRow(row);
         data.addRow(rowTwo);
+        System.out.println("x");
+        System.out.println(data);
         Vector vec = data.labelsAsVector();
         assertEquals(vec.get(0), 1.12, 0.0001);
         assertEquals(vec.get(1), 2.33, 0.0001);

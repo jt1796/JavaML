@@ -64,4 +64,11 @@ public class DataElement {
         }
         return numericValue;
     }
+    
+    public String toString() {
+        if(numeric) {
+            return "" + numericValue;
+        }
+        return nominalValue;
+    }
 }
