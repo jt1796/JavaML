@@ -25,6 +25,7 @@
  */
 package com.mlbean.classifiers;
 
+import com.mlbean.dataObjects.DataRow;
 import com.mlbean.dataObjects.DataSet;
 import java.util.HashMap;
 
@@ -35,7 +36,14 @@ import java.util.HashMap;
 public class DecisionTree {
     
     private double entropy(DataSet data) {
-        return 0.0;
+        double entropy = 0.0;
+        int totalSize = data.getDataHeight();
+        HashMap <String, Integer> classCount = marshalNominalLabels(data);
+        for(String s : classCount.keySet()) {
+            double prob = classCount.get(s) / totalSize;
+            entropy += prob * Math.log(prob);
+        }
+        return (-1) * entropy;
     }
     
     private double infoGain(DataSet data, String attribute) {
@@ -43,12 +51,15 @@ public class DecisionTree {
         return 0.0;
     }
     
-    private HashMap<String, Integer> marshalNominal(DataSet data, String attribute) {
-        //loop through every dataRow. 
-        return null;
-    }
-    
-    private HashMap<Double, Integer> marshalNumeric(DataSet data, String attribute) {
-        return null;
+    private HashMap<String, Integer> marshalNominalLabels(DataSet data) {
+        HashMap<String, Integer> marshalled = new HashMap<>();
+        for(DataRow row : data) {
+            String classLabel = row.getLabel().getNominalValue();
+            if(!marshalled.containsKey(classLabel)) {
+                marshalled.put(classLabel, 0);
+            }
+            marshalled.put(classLabel, 1 + marshalled.get(classLabel));
+        }
+        return marshalled;
     }
 }

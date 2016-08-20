@@ -28,7 +28,6 @@ package com.mlbean.dataObjects;
 import com.mlbean.mathObjects.Matrix;
 import com.mlbean.mathObjects.Vector;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 
 /**
@@ -113,12 +112,26 @@ public class DataSet implements Iterable<DataRow> {
         return new Vector(getDataHeight(), vecData);
     }
     
-    public DataSet filter(String attribute, String className) {
-        return null;
+    //these methods are near useless. Filter by any attribute
+    public DataSet filterLabel(String className) {
+        DataSet filteredData = new DataSet(this.header, this.labelCol);
+        for(DataRow row : this) {
+            if (row.getLabel().equals(className)) {
+                filteredData.addRow(row);
+            }
+        }
+        return filteredData;
     }
     
-    public DataSet filter(String attribute, double threshold) {
-        return null;
+    public DataSet filterlabel(double minToKeep, double maxToKeep) {
+        DataSet filteredData = new DataSet(this.header, this.labelCol);
+        for(DataRow row : this) {
+            double label = row.getLabel().getNumericValue();
+            if(label >= minToKeep && label <= maxToKeep) {
+                filteredData.addRow(row);
+            }
+        }
+        return filteredData;
     }
     
     public String toString() {

@@ -71,4 +71,28 @@ public class DataElement {
         }
         return nominalValue;
     }
+    
+    public boolean equals(Object other) {
+        if (other instanceof DataElement) {
+            DataElement e = (DataElement) other;
+            if(e.numeric && this.numeric && doubleEquals(e.numericValue, numericValue)) {
+                return true;
+            }
+            if(!e.numeric && !this.numeric && nominalValue.equals(e.getNominalValue())) {
+                return true;
+            }
+        }
+        if (other instanceof String && !numeric) {
+            return this.getNominalValue().equals(other);
+        }
+        if (other instanceof Double && numeric) {
+            return doubleEquals((Double) other, this.numericValue);
+        }
+        return true;
+    }
+    
+    private boolean doubleEquals(Double d1, Double d2) {
+        double diff = d1.doubleValue() - d2.doubleValue();
+        return Math.abs(diff) < 0.000001;
+    }
 }
