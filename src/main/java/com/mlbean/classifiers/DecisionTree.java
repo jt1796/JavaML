@@ -25,6 +25,7 @@
  */
 package com.mlbean.classifiers;
 
+import com.mlbean.dataObjects.DataHeader;
 import com.mlbean.dataObjects.DataRow;
 import com.mlbean.dataObjects.DataSet;
 import java.util.HashMap;
@@ -34,6 +35,11 @@ import java.util.HashMap;
  * @author John
  */
 public class DecisionTree {
+    
+    public void train(DataSet data) {
+        DTreeNode root = new DTreeNode();
+        root.buildChildren(data);
+    }
     
     private double entropy(DataSet data) {
         double entropy = 0.0;
@@ -61,5 +67,86 @@ public class DecisionTree {
             marshalled.put(classLabel, 1 + marshalled.get(classLabel));
         }
         return marshalled;
+    }
+    
+    private DataSplit findBestSplit(DataSet data) {
+        int bestNonLabel = -1;
+        int bestEntropy = -1;
+        for(int nonLabel = 0; nonLabel < data.getDataWidth() - 1; nonLabel++) {
+            String type = data.getHeader().getAttributeTypeByIndex(nonLabel);
+            if (type.equals("nominal")) {
+                //get a list of all the values. Split on each 
+            } else {
+                //get a list of all  the values. Split on each
+            }
+        }
+        return null;
+    }
+    
+    private class DTreeNode {
+        DataSplit split = null;
+        DTreeNode lChild = null;
+        DTreeNode rChild = null;
+        
+        public void buildChildren(DataSet data) {
+            if(data.getDataHeight() == 0) {
+                return;
+            }
+            double entropy = entropy(data);
+            if(entropy == 0.0) {
+                return;
+            }
+            split = findBestSplit(data);
+            DataSet[] datum = split.split(data);
+            lChild = new DTreeNode();
+            rChild = new DTreeNode();
+            lChild.buildChildren(datum[0]);
+            rChild.buildChildren(datum[1]);
+        }
+    }
+    
+    private abstract class DataSplit {
+        String attribute = null;
+        abstract DataSet[] split(DataSet data);
+    }
+    
+    private class NumericDataSplit extends DataSplit {
+        double threshold;
+        
+        public DataSet[] split(DataSet data) {
+            DataHeader header = data.getHeader();
+            int index = header.getAttributeIndexByName(attribute);
+            DataSet left = new DataSet(header);
+            DataSet right = new DataSet(header);
+            for(DataRow row : data) {
+                double rowVal = row.getAttribute(index).getNumericValue();
+                if(rowVal < threshold) {
+                    left.addRow(row);
+                } else {
+                    right.addRow(row);
+                }
+            }
+            return new DataSet[] {left, right};
+        }
+    }
+    
+    private class NominalDataSplit extends DataSplit {
+        String name;
+        
+        public DataSet[] split(DataSet data) {
+            DataHeader header = data.getHeader();
+            int index = header.getAttributeIndexByName(name);
+            DataSet left = new DataSet(header);
+            DataSet right = new DataSet(header);
+            for(DataRow row : data) {
+                String rowVal = row.getAttribute(index).getNominalValue();
+                if (rowVal.equals(name)) {
+                    left.addRow(row);
+                } else {
+                    right.addRow(row);
+                }
+            }
+            return new DataSet[] {left, right};
+        }
     }
 }

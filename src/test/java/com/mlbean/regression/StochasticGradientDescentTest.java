@@ -44,7 +44,7 @@ public class StochasticGradientDescentTest {
     @Test
     public void TwoDimLinear() {
         DataHeader header = new DataHeader("input", "numeric", "output", "numeric");
-        DataSet set = new DataSet(header, "output");
+        DataSet set = new DataSet(header);
         set.addRow(new DataRow(new DataElement[]{new DataElement(3)}, new DataElement(6)));
         set.addRow(new DataRow(new DataElement[]{new DataElement(5)}, new DataElement(10)));
         set.addRow(new DataRow(new DataElement[]{new DataElement(10)}, new DataElement(20)));
@@ -56,7 +56,7 @@ public class StochasticGradientDescentTest {
     @Test
     public void FourDimNoisy() {
         DataHeader header = new DataHeader("input1", "numeric", "input2", "numeric", "input3", "numeric", "input4", "numeric", "output", "numeric");
-        DataSet set = new DataSet(header, "output");
+        DataSet set = new DataSet(header);
         set.addRow(new DataRow(new DataElement[]{new DataElement(1), new DataElement(1), new DataElement(1), new DataElement(1)}, new DataElement(24 + 3)));
         set.addRow(new DataRow(new DataElement[]{new DataElement(2), new DataElement(2), new DataElement(2), new DataElement(2)}, new DataElement(48 + 3)));
         set.addRow(new DataRow(new DataElement[]{new DataElement(3), new DataElement(1), new DataElement(6), new DataElement(1)}, new DataElement(53 + 3)));

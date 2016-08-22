@@ -35,6 +35,12 @@ public class DataRow {
     private DataElement[] nonLabels = null;
     private DataElement label = null;
     
+    public DataRow(DataElement[] attributes) {
+        this.label = attributes[attributes.length - 1];
+        nonLabels = new DataElement[attributes.length - 1];
+        System.arraycopy(attributes, 0, nonLabels, 0, nonLabels.length);
+    }
+    
     public DataRow(DataElement[] nonLabels, DataElement label) {
         this.nonLabels = nonLabels;
         this.label = label;
@@ -45,6 +51,13 @@ public class DataRow {
     }
     
     public DataElement getNonLabel(int i) {
+        return nonLabels[i];
+    }
+    
+    public DataElement getAttribute(int i) {
+        if(i == nonLabels.length + 1) {
+            return label;
+        }
         return nonLabels[i];
     }
     

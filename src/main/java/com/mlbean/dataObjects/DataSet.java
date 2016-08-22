@@ -36,25 +36,24 @@ import java.util.Iterator;
  */
 public class DataSet implements Iterable<DataRow> {
     DataHeader header = null;
-    private String labelCol = null;
     ArrayList<DataRow> data = null;
     String[] orderedNonLabels = null;
+    String[] orderedAttributes = null;
+    String labelName = null;
     
-    public DataSet(DataHeader hdr, String label) {
-        if (!hdr.containsAttribute(label)) {
-           throw new RuntimeException("the label does not exist"); 
-        }
+    public DataSet(DataHeader hdr) {
         this.header = hdr;
-        this.labelCol = label;
         orderedNonLabels = new String[header.numAttributes() - 1];
+        orderedAttributes = new String[header.numAttributes()];
         data = new ArrayList<>();
-        int j = 0;
         for(int i = 0; i < header.numAttributes(); i++) {
             String name = header.getAttributeNameByIndex(i);
-            if(!name.equals(label)) {
-                orderedNonLabels[j] = name;
-                j++;
+            if(i != header.numAttributes() - 1) {
+                orderedNonLabels[i] = name;
+            } else {
+                labelName = name;
             }
+            orderedAttributes[i] = name;
         }
     }
     
@@ -62,7 +61,7 @@ public class DataSet implements Iterable<DataRow> {
         if(header.numAttributes() != row.numAttributes()) {
             throw new RuntimeException("this row does not have the right number of attributes");
         }
-        String labelType = header.getAttributeTypeByName(labelCol);
+        String labelType = header.getAttributeTypeByName(labelName);
         String rowLabelType = row.getLabel().dataType();
         if (!labelType.equals(rowLabelType)) {
             throw new RuntimeException("this row has a type mismatch in the label");
@@ -70,7 +69,7 @@ public class DataSet implements Iterable<DataRow> {
         int nonLabelIndex = 0;
         for(int i = 0; i < header.numAttributes(); i++) {
             String currentAttributeName = header.getAttributeNameByIndex(i);
-            if(!currentAttributeName.equals(labelCol)) {
+            if(!currentAttributeName.equals(labelName)) {
                 String currentNonLabelType = row.getNonLabel(nonLabelIndex).dataType();
                 if(!currentNonLabelType.equals(header.getAttributeTypeByIndex(i))) {
                     throw new RuntimeException("this row has a type mismatch in " + header.getAttributeNameByIndex(i));
@@ -112,19 +111,19 @@ public class DataSet implements Iterable<DataRow> {
         return new Vector(getDataHeight(), vecData);
     }
     
-    //these methods are near useless. Filter by any attribute
-    public DataSet filterLabel(String className) {
-        DataSet filteredData = new DataSet(this.header, this.labelCol);
+    public DataSet filterAttribute(String attribute, String nameToKeep) {
+        int attribIndex = header.getAttributeIndexByName(attribute);
+        DataSet filteredData = new DataSet(this.header);
         for(DataRow row : this) {
-            if (row.getLabel().equals(className)) {
+            if (row.getAttribute(attribIndex).equals(nameToKeep)) {
                 filteredData.addRow(row);
             }
         }
         return filteredData;
     }
     
-    public DataSet filterlabel(double minToKeep, double maxToKeep) {
-        DataSet filteredData = new DataSet(this.header, this.labelCol);
+    public DataSet filterAttribute(String attribute, double minToKeep, double maxToKeep) {
+        DataSet filteredData = new DataSet(this.header);
         for(DataRow row : this) {
             double label = row.getLabel().getNumericValue();
             if(label >= minToKeep && label <= maxToKeep) {
@@ -141,7 +140,7 @@ public class DataSet implements Iterable<DataRow> {
         for(int i = 0; i < header.numAttributes() - 1; i++) {
             colWidths[i] = orderedNonLabels[i].length();
         }
-        colWidths[header.numAttributes() - 1] = this.labelCol.length();
+        colWidths[header.numAttributes() - 1] = this.labelName.length();
         for(DataRow d : this) {
             for(int i = 0; i < colWidths.length - 1; i++) {
                 colWidths[i] = Math.max(colWidths[i], d.getNonLabel(i).toString().length());
@@ -157,7 +156,7 @@ public class DataSet implements Iterable<DataRow> {
             table += prefix + rightPad(orderedNonLabels[i], colWidths[i]);
             prefix = " | ";
         }
-        table += prefix + rightPad(labelCol, colWidths[orderedNonLabels.length - 1]);
+        table += prefix + rightPad(labelName, colWidths[orderedNonLabels.length - 1]);
         table += "\n";
         for(int i = 0; i < tableWidth; i++) {
             table += "=";
@@ -182,5 +181,9 @@ public class DataSet implements Iterable<DataRow> {
             spaces += " ";
         }
         return word + spaces;
+    }
+    
+    public DataHeader getHeader() {
+        return this.header;
     }
 }

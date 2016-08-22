@@ -53,11 +53,9 @@ public class DataSetTest {
    
     @Test
     public void testLabelsAsVector() {
-        DataSet data = new DataSet(header, "price");
+        DataSet data = new DataSet(header);
         data.addRow(row);
         data.addRow(rowTwo);
-        System.out.println("x");
-        System.out.println(data);
         Vector vec = data.labelsAsVector();
         assertEquals(vec.get(0), 1.12, 0.0001);
         assertEquals(vec.get(1), 2.33, 0.0001);
@@ -66,7 +64,7 @@ public class DataSetTest {
     
     @Test
     public void testNonLabelsAsMatrix() {
-        DataSet data = new DataSet(header, "price");
+        DataSet data = new DataSet(header);
         data.addRow(row);
         data.addRow(rowTwo);
         Matrix mat = data.nonLabelsAsMatrix();
@@ -76,29 +74,18 @@ public class DataSetTest {
     }
     
     @Test
-    public void testNewDataSetMissingLabel() {
-        try {
-            DataSet data = new DataSet(header, "vehicle length");            
-        }catch(Exception e) {
-            assertEquals(e.getMessage(), "the label does not exist");
-            return;
-        }
-        fail("no exception was thrown.");
-    }
-    
-    @Test
     public void addWithDimensionMismatch() {
     }
     
     @Test
-    public void testTypeMismatchAfterLabel() {
+    public void testTypeMismatchInNonLabel() {
         try {
-            DataElement[] dArr = {new DataElement(5.2), new DataElement("tall")};
+            DataElement[] dArr = {new DataElement(5.2), new DataElement("expensize")};
             DataRow dRow = new DataRow(dArr, new DataElement(2.3));
-            DataSet data = new DataSet(header, "price");
+            DataSet data = new DataSet(header);
             data.addRow(dRow);
         }catch(Exception e) {
-            assertEquals(e.getMessage(), "this row has a type mismatch in vehicle height");
+            assertEquals(e.getMessage(), "this row has a type mismatch in price");
             return;
         }
         fail("no exception was thrown.");
@@ -109,24 +96,10 @@ public class DataSetTest {
         try {
             DataElement[] dArr = {new DataElement(5.2), new DataElement(5.4)};
             DataRow dRow = new DataRow(dArr, new DataElement("expensive"));
-            DataSet data = new DataSet(header, "price");
+            DataSet data = new DataSet(header);
             data.addRow(dRow);
         }catch(Exception e) {
             assertEquals(e.getMessage(), "this row has a type mismatch in the label");
-            return;
-        }
-        fail("no exception was thrown.");
-    }
-    
-    @Test
-    public void testTypeMismatchBeforeLabel() {
-        try {
-            DataElement[] dArr = {new DataElement("heavy"), new DataElement(5.4)};
-            DataRow dRow = new DataRow(dArr, new DataElement(1200));
-            DataSet data = new DataSet(header, "price");
-            data.addRow(dRow);
-        }catch(Exception e) {
-            assertEquals(e.getMessage(), "this row has a type mismatch in vehicle weight");
             return;
         }
         fail("no exception was thrown.");
