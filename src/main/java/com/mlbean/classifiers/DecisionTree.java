@@ -32,6 +32,7 @@ import com.mlbean.dataObjects.DataSet;
 
 import javax.xml.crypto.Data;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  *
@@ -53,7 +54,7 @@ public class DecisionTree {
         int totalSize = data.getDataHeight();
         HashMap <String, Integer> classCount = marshalNominalLabels(data);
         for(String s : classCount.keySet()) {
-            double prob = classCount.get(s) / totalSize;
+            double prob = ((double)classCount.get(s)) / totalSize;
             entropy += prob * Math.log(prob);
         }
         return (-1) * entropy;
@@ -79,11 +80,17 @@ public class DecisionTree {
     private DataSplit findBestSplit(DataSet data) {
         int bestNonLabel = -1;
         int bestEntropy = -1;
+        // marshal instead
+        DataHeader header = data.getHeader();
         for(int nonLabel = 0; nonLabel < data.getDataWidth() - 1; nonLabel++) {
-            String type = data.getHeader().getAttributeTypeByIndex(nonLabel);
+            String type = header.getAttributeTypeByIndex(nonLabel);
             if (type.equals("nominal")) {
+                HashSet<String> possibleValues = new HashSet<>();
+                //todo loop over rows only once. 
+                data.forEach((r) -> possibleValues.add(r.getAttribute(nonLabel).toString()));
                 //get a list of all the values. Split on each 
             } else {
+                Integer[] possibleSplitPoints = {};
                 //get a list of all  the values. Split on each
             }
         }
