@@ -40,12 +40,14 @@ import java.util.HashSet;
  */
 public class DecisionTree {
 
-    public DataElement predict(DataElement lbl) {
-        return new DataElement("TODO");
+    DTreeNode root;
+
+    public String predict(DataElement[] attributes) {
+        return root.predict(attributes);
     }
     
     public void train(DataSet data) {
-        DTreeNode root = new DTreeNode();
+        root = new DTreeNode();
         root.buildChildren(data);
     }
     
@@ -77,30 +79,60 @@ public class DecisionTree {
         return marshalled;
     }
     
-    private DataSplit findBestSplit(DataSet data) {
-        int bestNonLabel = -1;
-        int bestEntropy = -1;
-        // marshal instead
-        DataHeader header = data.getHeader();
-        for(int nonLabel = 0; nonLabel < data.getDataWidth() - 1; nonLabel++) {
-            String type = header.getAttributeTypeByIndex(nonLabel);
-            if (type.equals("nominal")) {
-                HashSet<String> possibleValues = new HashSet<>();
-                //todo loop over rows only once. 
-                data.forEach((r) -> possibleValues.add(r.getAttribute(nonLabel).toString()));
-                //get a list of all the values. Split on each 
-            } else {
-                Integer[] possibleSplitPoints = {};
-                //get a list of all  the values. Split on each
+    private DataSplit findBestSplitOnCol(DataSet data) {
+        double leastEntropy = Double.MAX_VALUE;
+        DataSplit bestSplit = null;
+        for(int i = 0; i < data.getDataWidth() - 1; i++) {
+            DataSplit split = findBestSplitOnColAtt(data, i);
+            DataSet[] d = split.split(data);
+            Double entropy = entropy(d[0]) + entropy(d[1]);
+            if(entropy < leastEntropy) {
+                leastEntropy = entropy;
+                bestSplit = split;
             }
         }
-        return null;
+        return bestSplit;
+    }
+
+    private DataSplit findBestSplitOnColAtt(DataSet data, int col) {
+        double leastEntropy = Double.MAX_VALUE;
+        DataSplit bestSplit = null;
+        HashSet<String> attSet = new HashSet<>();
+        for(DataRow d : data) {
+            attSet.add(d.getAttribute(col).getNominalValue());
+        }
+        for(String val : attSet) {
+            NominalDataSplit split = new NominalDataSplit();
+            split.attribute = col;
+            split.val = val;
+            DataSet[] dsets = split.split(data);
+            double entropy = entropy(dsets[0]) + entropy(dsets[1]);
+            if (entropy < leastEntropy) {
+                leastEntropy = entropy;
+                bestSplit = split;
+            }
+        }
+        return bestSplit;
     }
     
     private class DTreeNode {
         DataSplit split = null;
         DTreeNode lChild = null;
         DTreeNode rChild = null;
+        String prediction = null;
+
+        public String predict(DataElement[] attributes) {
+            if(null != prediction) {
+                return prediction;
+            }
+            int splitIndex = split.attribute;
+            String splitVal = ((NominalDataSplit) split).val;
+            if(attributes[splitIndex].getNominalValue().equals(splitVal)) {
+                return lChild.predict(attributes);
+            } else {
+                return rChild.predict(attributes);
+            }
+        }
         
         public void buildChildren(DataSet data) {
             if(data.getDataHeight() == 0) {
@@ -108,9 +140,10 @@ public class DecisionTree {
             }
             double entropy = entropy(data);
             if(entropy == 0.0) {
+                prediction = data.iterator().next().getLabel().getNominalValue();
                 return;
             }
-            split = findBestSplit(data);
+            split = findBestSplitOnCol(data);
             DataSet[] datum = split.split(data);
             lChild = new DTreeNode();
             rChild = new DTreeNode();
@@ -120,7 +153,7 @@ public class DecisionTree {
     }
     
     private abstract class DataSplit {
-        String attribute = null;
+        int attribute = -1;
         abstract DataSet[] split(DataSet data);
     }
     
@@ -129,11 +162,10 @@ public class DecisionTree {
         
         public DataSet[] split(DataSet data) {
             DataHeader header = data.getHeader();
-            int index = header.getAttributeIndexByName(attribute);
             DataSet left = new DataSet(header);
             DataSet right = new DataSet(header);
             for(DataRow row : data) {
-                double rowVal = row.getAttribute(index).getNumericValue();
+                double rowVal = row.getAttribute(attribute).getNumericValue();
                 if(rowVal < threshold) {
                     left.addRow(row);
                 } else {
@@ -145,22 +177,25 @@ public class DecisionTree {
     }
     
     private class NominalDataSplit extends DataSplit {
-        String name;
+        String val;
         
         public DataSet[] split(DataSet data) {
             DataHeader header = data.getHeader();
-            int index = header.getAttributeIndexByName(name);
             DataSet left = new DataSet(header);
             DataSet right = new DataSet(header);
             for(DataRow row : data) {
-                String rowVal = row.getAttribute(index).getNominalValue();
-                if (rowVal.equals(name)) {
+                String rowVal = row.getAttribute(attribute).getNominalValue();
+                if (rowVal.equals(val)) {
                     left.addRow(row);
                 } else {
                     right.addRow(row);
                 }
             }
             return new DataSet[] {left, right};
+        }
+
+        public String toString() {
+            return "Split on index : " + attribute;
         }
     }
 }
