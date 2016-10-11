@@ -25,9 +25,12 @@
  */
 package com.mlbean.classifiers;
 
+import com.mlbean.dataObjects.DataElement;
 import com.mlbean.dataObjects.DataHeader;
 import com.mlbean.dataObjects.DataRow;
 import com.mlbean.dataObjects.DataSet;
+
+import javax.xml.crypto.Data;
 import java.util.HashMap;
 
 /**
@@ -35,6 +38,10 @@ import java.util.HashMap;
  * @author John
  */
 public class DecisionTree {
+
+    public DataElement predict(DataElement lbl) {
+        return new DataElement("TODO");
+    }
     
     public void train(DataSet data) {
         DTreeNode root = new DTreeNode();
