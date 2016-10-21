@@ -2,6 +2,10 @@
 
 # MLBean
 
+DONE:
+Gradient/Stochastic Descent Regression
+Closed Form Regression
+
 INPROGRESS:
 Decision Tree Classifier
 
