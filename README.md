@@ -2,5 +2,8 @@
 
 # MLBean
 
-TODO:
+INPROGRESS:
 Decision Tree Classifier
+
+TODO:
+Support Vector Machine
