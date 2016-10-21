@@ -35,4 +35,34 @@ public class DecisionTreeTest {
         tree.train(one);
         assertEquals("heavy", tree.predict(new DataElement[] {new DataElement("red")}));
     }
+
+    @Test
+    public void testMultipleAttributes() {
+        DataSet two = new DataSet(new DataHeader("color", "nominal", "height", "nominal", "weight", "nominal"));
+        two.addRow(new DataRow(new DataElement[] {new DataElement("blue"), new DataElement("short"), new DataElement("light")}));
+        two.addRow(new DataRow(new DataElement[] {new DataElement("blue"), new DataElement("tall"), new DataElement("heavy")}));
+        two.addRow(new DataRow(new DataElement[] {new DataElement("red"), new DataElement("short"), new DataElement("light")}));
+        two.addRow(new DataRow(new DataElement[] {new DataElement("red"), new DataElement("tall"), new DataElement("heavy")}));
+        tree = new DecisionTree();
+        tree.train(two);
+        assertEquals("light", tree.predict(new DataElement[] {new DataElement("blue"), new DataElement("short")}));
+        assertEquals("heavy", tree.predict(new DataElement[] {new DataElement("blue"), new DataElement("tall")}));
+        assertEquals("light", tree.predict(new DataElement[] {new DataElement("red"), new DataElement("short")}));
+        assertEquals("heavy", tree.predict(new DataElement[] {new DataElement("red"), new DataElement("tall")}));
+    }
+
+    @Test
+    public void testUselessAttributes() {
+        DataSet two = new DataSet(new DataHeader("color", "nominal", "height", "nominal", "weight", "nominal"));
+        two.addRow(new DataRow(new DataElement[] {new DataElement("blue"), new DataElement("short"), new DataElement("light")}));
+        two.addRow(new DataRow(new DataElement[] {new DataElement("blue"), new DataElement("tall"), new DataElement("light")}));
+        two.addRow(new DataRow(new DataElement[] {new DataElement("red"), new DataElement("short"), new DataElement("heavy")}));
+        two.addRow(new DataRow(new DataElement[] {new DataElement("red"), new DataElement("tall"), new DataElement("heavy")}));
+        tree = new DecisionTree();
+        tree.train(two);
+        assertEquals("light", tree.predict(new DataElement[] {new DataElement("blue"), new DataElement("short")}));
+        assertEquals("light", tree.predict(new DataElement[] {new DataElement("blue"), new DataElement("tall")}));
+        assertEquals("heavy", tree.predict(new DataElement[] {new DataElement("red"), new DataElement("short")}));
+        assertEquals("heavy", tree.predict(new DataElement[] {new DataElement("red"), new DataElement("tall")}));
+    }
 }
