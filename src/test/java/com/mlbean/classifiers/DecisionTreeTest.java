@@ -1,9 +1,6 @@
 package com.mlbean.classifiers;
 
-import com.mlbean.dataObjects.DataElement;
-import com.mlbean.dataObjects.DataHeader;
-import com.mlbean.dataObjects.DataRow;
-import com.mlbean.dataObjects.DataSet;
+import com.mlbean.dataObjects.*;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -13,6 +10,7 @@ import static org.junit.Assert.*;
 public class DecisionTreeTest {
 
     DecisionTree tree;
+    DataObjectFactory factory = new DataObjectFactory();
 
     @Test
     public void testSimpleDecision() {
@@ -54,15 +52,15 @@ public class DecisionTreeTest {
     @Test
     public void testUselessAttributes() {
         DataSet two = new DataSet(new DataHeader("color", "nominal", "height", "nominal", "weight", "nominal"));
-        two.addRow(new DataRow(new DataElement[] {new DataElement("blue"), new DataElement("short"), new DataElement("light")}));
-        two.addRow(new DataRow(new DataElement[] {new DataElement("blue"), new DataElement("tall"), new DataElement("light")}));
-        two.addRow(new DataRow(new DataElement[] {new DataElement("red"), new DataElement("short"), new DataElement("heavy")}));
-        two.addRow(new DataRow(new DataElement[] {new DataElement("red"), new DataElement("tall"), new DataElement("heavy")}));
+        two.addRow(factory.genRow("blue", "short", "light"));
+        two.addRow(factory.genRow("blue", "tall", "light"));
+        two.addRow(factory.genRow("red", "short", "heavy"));
+        two.addRow(factory.genRow("red", "tall", "heavy"));
         tree = new DecisionTree();
         tree.train(two);
-        assertEquals("light", tree.predict(new DataElement[] {new DataElement("blue"), new DataElement("short")}));
-        assertEquals("light", tree.predict(new DataElement[] {new DataElement("blue"), new DataElement("tall")}));
-        assertEquals("heavy", tree.predict(new DataElement[] {new DataElement("red"), new DataElement("short")}));
-        assertEquals("heavy", tree.predict(new DataElement[] {new DataElement("red"), new DataElement("tall")}));
+        assertEquals("light", tree.predict(factory.genElementArray("blue", "short")));
+        assertEquals("light", tree.predict(factory.genElementArray("blue", "tall")));
+        assertEquals("heavy", tree.predict(factory.genElementArray("red", "short")));
+        assertEquals("heavy", tree.predict(factory.genElementArray("red", "tall")));
     }
 }
