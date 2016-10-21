@@ -21,6 +21,7 @@ public class DecisionTreeTest {
         one.addRow(new DataRow(new DataElement[] {new DataElement("green"), new DataElement("light")}));
         tree = new DecisionTree();
         tree.train(one);
-        assertEquals("red", tree.predict(new DataElement[] {new DataElement("heavy")}));
+        assertEquals("heavy", tree.predict(new DataElement[] {new DataElement("red")}));
+        assertEquals("light", tree.predict(new DataElement[] {new DataElement("green")}));
     }
 }
