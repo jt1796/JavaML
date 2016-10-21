@@ -50,6 +50,10 @@ public class DecisionTree {
         root = new DTreeNode();
         root.buildChildren(data);
     }
+
+    public String toString() {
+        return root.toString();
+    }
     
     private double entropy(DataSet data) {
         double entropy = 0.0;
@@ -92,6 +96,34 @@ public class DecisionTree {
             }
         }
         return bestSplit;
+    }
+
+    private boolean canSplit(DataSet data) {
+        for(int i = 0; i < data.getDataWidth() - 1; i++) {
+            String lastAtt = null;
+            for(DataRow d : data) {
+                if(null == lastAtt) {
+                    lastAtt = d.getAttribute(i).getNominalValue();
+                }
+                if(!lastAtt.equals(d.getAttribute(i).getNominalValue())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private String getMostCommonLabel(DataSet data) {
+        HashMap<String, Integer> cMap = marshalNominalLabels(data);
+        String attr = null;
+        int maxCount = -1;
+        for(String key : cMap.keySet()) {
+            if(cMap.get(key) > maxCount) {
+                maxCount = cMap.get(key);
+                attr = key;
+            }
+        }
+        return attr;
     }
 
     private DataSplit findBestSplitOnColAtt(DataSet data, int col) {
@@ -143,12 +175,20 @@ public class DecisionTree {
                 prediction = data.iterator().next().getLabel().getNominalValue();
                 return;
             }
+            if (!canSplit(data)) {
+                prediction = getMostCommonLabel(data);
+                return;
+            }
             split = findBestSplitOnCol(data);
             DataSet[] datum = split.split(data);
             lChild = new DTreeNode();
             rChild = new DTreeNode();
             lChild.buildChildren(datum[0]);
             rChild.buildChildren(datum[1]);
+        }
+
+        public String toString() {
+            return "" + split;
         }
     }
     
