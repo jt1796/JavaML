@@ -38,12 +38,12 @@ import java.util.HashSet;
  *
  * @author John
  */
-public class DecisionTree {
+public class DecisionTree implements Classifier {
 
     DTreeNode root;
 
-    public String predict(DataElement[] attributes) {
-        return root.predict(attributes);
+    public DataElement predict(DataElement[] attributes) {
+        return new DataElement(root.predict(attributes));
     }
     
     public void train(DataSet data) {
