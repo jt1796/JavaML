@@ -34,7 +34,8 @@ public class NdPlane implements Function {
     private double[] coeffs;
     
     public NdPlane(double[] coeffs) {
-        this.coeffs = coeffs;
+        this.coeffs = new double[coeffs.length];
+        System.arraycopy(coeffs, 0, this.coeffs, 0, coeffs.length);
     }
 
     @Override

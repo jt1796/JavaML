@@ -102,10 +102,10 @@ public class Vector {
     }
     
     public String toString() {
-        String ret = "";
+        StringBuilder ret = new StringBuilder();
         for (int i = 0; i < length; i++) {
-            ret += "\n[ " + get(i) + " ]";
+            ret.append("\n[ ").append(get(i)).append(" ]");
         }
-        return ret;
+        return ret.toString();
     }
 }

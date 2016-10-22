@@ -217,14 +217,14 @@ public class Matrix {
     }
     
     public String toString() {
-        String buffer = "";
+        StringBuilder buffer = new StringBuilder();
         for(int r = 0; r < height; r++) {
-            buffer += "[ ";
+            buffer.append("[ ");
             for(int c = 0; c < width; c++) {
-                buffer += " " + get(r, c);
+                buffer.append(" ").append(get(r, c));
             }
-            buffer += "]\n";
+            buffer.append("]\n");
         }
-        return buffer;
+        return buffer.toString();
     }
 }

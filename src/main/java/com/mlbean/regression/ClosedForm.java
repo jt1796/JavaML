@@ -40,11 +40,9 @@ public class ClosedForm extends Regression {
     }
     
     public void execute() {
-        //need to augment the matrix with ones.
         Matrix x = this.dataSet.nonLabelsAsMatrix();
         x = this.augmentMatrixWithOnes(x);
         Matrix x_transpose = x.transpose();
-        Vector y = this.dataSet.labelsAsVector();
         Matrix result = x_transpose.multiply(x).inverse().multiply(x_transpose).multiply(dataSet.labelsAsVector());
         double[] coeffData = new double[dataSet.getDataWidth()];
         for(int i = 0; i < coeffData.length; i++) {
