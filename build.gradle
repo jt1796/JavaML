@@ -1,6 +1,8 @@
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
+//apply plugin: 'checkstyle'
+apply plugin: 'findbugs'
 
 sourceCompatibility = 1.8
 

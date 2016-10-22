@@ -40,7 +40,7 @@ import java.util.HashSet;
  */
 public class DecisionTree implements Classifier {
 
-    DTreeNode root;
+    private DTreeNode root;
 
     public DataElement predict(DataElement[] attributes) {
         return new DataElement(root.predict(attributes));
@@ -64,11 +64,6 @@ public class DecisionTree implements Classifier {
             entropy += prob * Math.log(prob);
         }
         return (-1) * entropy;
-    }
-    
-    private double infoGain(DataSet data, String attribute) {
-        double entropy = entropy(data);
-        return 0.0;
     }
     
     private HashMap<String, Integer> marshalNominalLabels(DataSet data) {
@@ -153,7 +148,7 @@ public class DecisionTree implements Classifier {
         DTreeNode rChild = null;
         String prediction = null;
 
-        public String predict(DataElement[] attributes) {
+        String predict(DataElement[] attributes) {
             if(null != prediction) {
                 return prediction;
             }
@@ -166,7 +161,7 @@ public class DecisionTree implements Classifier {
             }
         }
         
-        public void buildChildren(DataSet data) {
+        void buildChildren(DataSet data) {
             if(data.getDataHeight() == 0) {
                 return;
             }
