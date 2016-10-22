@@ -28,6 +28,8 @@ package com.mlbean.dataObjects;
 import com.mlbean.mathObjects.Matrix;
 import com.mlbean.mathObjects.Vector;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 
 /**
@@ -35,11 +37,11 @@ import java.util.Iterator;
  * @author John
  */
 public class DataSet implements Iterable<DataRow> {
-    DataHeader header = null;
-    ArrayList<DataRow> data = null;
-    String[] orderedNonLabels = null;
-    String[] orderedAttributes = null;
-    String labelName = null;
+    private DataHeader header = null;
+    private Collection<DataRow> data = null;
+    private String[] orderedNonLabels = null;
+    private String[] orderedAttributes = null;
+    private String labelName = null;
     
     public DataSet(DataHeader hdr) {
         this.header = hdr;
@@ -93,9 +95,10 @@ public class DataSet implements Iterable<DataRow> {
     }
     
     public Matrix nonLabelsAsMatrix() {
+        DataRow[] dataArr = data.toArray(new DataRow[getDataHeight()]);
         double[][] matData = new double[getDataHeight()][getDataWidth() - 1];
         for(int r = 0; r < getDataHeight(); r++) {
-            Vector row = data.get(r).nonLabelsAsVector();
+            Vector row = dataArr[r].nonLabelsAsVector();
             for(int c = 0; c < getDataWidth() - 1; c++) {
                 matData[r][c] = row.get(c);
             }
@@ -104,35 +107,22 @@ public class DataSet implements Iterable<DataRow> {
     }
     
     public Vector labelsAsVector() {
+        DataRow[] dataArr = data.toArray(new DataRow[getDataHeight()]);
         double[] vecData = new double[getDataHeight()];
         for(int i = 0; i < getDataHeight(); i++) {
-            vecData[i] = data.get(i).getLabel().getNumericValue();
+            vecData[i] = dataArr[i].getLabel().getNumericValue();
         }
         return new Vector(getDataHeight(), vecData);
     }
-    
-    public DataSet filterAttribute(String attribute, String nameToKeep) {
-        int attribIndex = header.getAttributeIndexByName(attribute);
-        DataSet filteredData = new DataSet(this.header);
-        for(DataRow row : this) {
-            if (row.getAttribute(attribIndex).equals(nameToKeep)) {
-                filteredData.addRow(row);
-            }
+
+    public void switchBacking(Collection<DataRow> e) {
+        if (!e.isEmpty()) {
+            throw new RuntimeException("collection must be empty");
         }
-        return filteredData;
+        e.addAll(data);
+        data = e;
     }
-    
-    public DataSet filterAttribute(String attribute, double minToKeep, double maxToKeep) {
-        DataSet filteredData = new DataSet(this.header);
-        for(DataRow row : this) {
-            double label = row.getLabel().getNumericValue();
-            if(label >= minToKeep && label <= maxToKeep) {
-                filteredData.addRow(row);
-            }
-        }
-        return filteredData;
-    }
-    
+
     public String toString() {
         int tableWidth = 0;
         String table = "";
