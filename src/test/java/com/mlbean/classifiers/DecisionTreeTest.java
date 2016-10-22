@@ -63,4 +63,15 @@ public class DecisionTreeTest {
         assertEquals(new DataElement("heavy"), tree.predict(factory.genElementArray("red", "short")));
         assertEquals(new DataElement("heavy"), tree.predict(factory.genElementArray("red", "tall")));
     }
+
+    @Test
+    public void testNumericAttributes() {
+        DataSet one = new DataSet(new DataHeader("price", "numeric", "weight", "nominal"));
+        one.addRow(factory.genRow(1.20, "light"));
+        one.addRow(factory.genRow(3.50, "light"));
+        one.addRow(factory.genRow(6.00, "heavy"));
+        tree = new DecisionTree();
+        tree.train(one);
+        assertEquals(new DataElement("heavy"), tree.predict(factory.genElementArray(7.00)));
+    }
 }
