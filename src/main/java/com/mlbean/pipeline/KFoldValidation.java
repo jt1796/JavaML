@@ -1,6 +1,7 @@
 package com.mlbean.pipeline;
 
 import com.mlbean.classifiers.Classifier;
+import com.mlbean.dataObjects.DataElement;
 import com.mlbean.dataObjects.DataRow;
 import com.mlbean.dataObjects.DataSet;
 import java.util.LinkedList;
@@ -23,18 +24,25 @@ public class KFoldValidation {
         DataSet[] dataSets = chunkDataSet(dataSet);
         for(int i = 0; i < folds; i++) {
             trainOnAllButOne(classifier, dataSets, i);
-            accuracy += (classifier, dataSets[i]);
+            accuracy += benchMark(classifier, dataSets[i]);
         }
         return accuracy / folds;
     }
 
     private double benchMark(Classifier classifier, DataSet data) {
-        return 0.0
+        double correct = 0;
+        for(DataRow r : data) {
+            DataElement prediction = classifier.predict(r.getNonLabels());
+            if(prediction.equals(r.getLabel())) {
+                correct++;
+            }
+        }
+        return correct / data.getDataHeight();
     }
 
     private void trainOnAllButOne(Classifier classifier, DataSet[] sets, int n) {
         DataSet[] toTrainWith = new DataSet[sets.length - 1];
-        for(int i, j = 0; i < sets.length; i++) {
+        for(int i = 0, j = 0; i < sets.length; i++) {
             if(i == n) {
                 continue;
             }

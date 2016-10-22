@@ -53,6 +53,10 @@ public class DataRow {
     public DataElement getNonLabel(int i) {
         return nonLabels[i];
     }
+
+    public DataElement[] getNonLabels() {
+        return nonLabels;
+    }
     
     public DataElement getAttribute(int i) {
         if(i == nonLabels.length + 1) {
