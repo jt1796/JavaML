@@ -32,17 +32,18 @@ import com.mlbean.mathObjects.Vector;
  * @author John
  */
 public class DataRow {
-    private DataElement[] nonLabels = null;
-    private DataElement label = null;
+    private final DataElement[] nonLabels;
+    private final DataElement label;
     
     public DataRow(DataElement[] attributes) {
         this.label = attributes[attributes.length - 1];
         nonLabels = new DataElement[attributes.length - 1];
         System.arraycopy(attributes, 0, nonLabels, 0, nonLabels.length);
     }
-    
+
     public DataRow(DataElement[] nonLabels, DataElement label) {
-        this.nonLabels = nonLabels;
+        this.nonLabels = new DataElement[nonLabels.length];
+        System.arraycopy(nonLabels, 0, this.nonLabels, 0, nonLabels.length);
         this.label = label;
     }
     
@@ -55,7 +56,9 @@ public class DataRow {
     }
 
     public DataElement[] getNonLabels() {
-        return nonLabels;
+        DataElement[] copy = new DataElement[nonLabels.length];
+        System.arraycopy(nonLabels, 0, copy, 0, copy.length);
+        return copy;
     }
     
     public DataElement getAttribute(int i) {

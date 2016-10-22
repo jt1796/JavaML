@@ -33,6 +33,7 @@ import com.mlbean.dataObjects.DataSet;
 import javax.xml.crypto.Data;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 /**
  *
@@ -59,8 +60,8 @@ public class DecisionTree implements Classifier {
         double entropy = 0.0;
         int totalSize = data.getDataHeight();
         HashMap <String, Integer> classCount = marshalNominalLabels(data);
-        for(String s : classCount.keySet()) {
-            double prob = ((double)classCount.get(s)) / totalSize;
+        for(Map.Entry<String, Integer> s : classCount.entrySet()) {
+            double prob = ((double)s.getValue()) / totalSize;
             entropy += prob * Math.log(prob);
         }
         return (-1) * entropy;
@@ -112,10 +113,10 @@ public class DecisionTree implements Classifier {
         HashMap<String, Integer> cMap = marshalNominalLabels(data);
         String attr = null;
         int maxCount = -1;
-        for(String key : cMap.keySet()) {
-            if(cMap.get(key) > maxCount) {
-                maxCount = cMap.get(key);
-                attr = key;
+        for(Map.Entry<String, Integer> entry : cMap.entrySet()) {
+            if(entry.getValue() > maxCount) {
+                maxCount = entry.getValue();
+                attr = entry.getKey();
             }
         }
         return attr;

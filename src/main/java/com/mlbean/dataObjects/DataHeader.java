@@ -82,7 +82,7 @@ public class DataHeader {
         return header.get(index).type;
     }
     
-    private class DataSpot {
+    private static class DataSpot {
         String type = "";
         String name = "";
         
