@@ -35,23 +35,19 @@ public class Matrix {
     private final double[][] data;
     
     public Matrix(Matrix matrix) {
-        this.width = matrix.getWidth();
-        this.height = matrix.getHeight();
-        data = new double[height][width];
-        for(int r = 0; r < height; r++) {
-            for(int c = 0; c < width; c++) {
-                data[r][c] = matrix.get(r, c);
-            }
-        }
+        this(matrix.data);
     }
     
     public Matrix(double[][] data) {
-        this.data = data;
         height = data.length;
         if(0 == height) {
             width = 0;
         } else {
             width = data[0].length;
+        }
+        this.data = new double[height][width];
+        for(int r = 0; r < height; r++) {
+            System.arraycopy(data[r], 0, this.data[r], 0, width);
         }
     }
     
@@ -92,12 +88,11 @@ public class Matrix {
         }
         int newwidth = matrix.width;
         int newheight = this.height;
-        int dotprodlength = this.width;
         double[][] newdata = new double[newheight][newwidth];
         for(int r = 0; r < newheight; r++) {
             for(int c = 0; c < newwidth; c++) {
                 double dotprod = 0;
-                for(int i = 0; i < dotprodlength; i++) {
+                for(int i = 0; i < this.width; i++) {
                     dotprod += this.get(r, i) * matrix.get(i, c);
                 }
                 newdata[r][c] = dotprod;
@@ -106,7 +101,7 @@ public class Matrix {
         return new Matrix(newdata);
     }
     
-    public Matrix ReducedRowEchelonForm() {
+    public Matrix reducedRowEchelonForm() {
         double[][] newdata = data;
         for(int r = height - 1; r >= 0; r--) {
             if(newdata[r][r] != 0.0){
@@ -121,7 +116,7 @@ public class Matrix {
         return new Matrix(newdata);
     }
     
-    public Matrix RowEchelonForm() {
+    public Matrix rowEchelonForm() {
         double[][] newdata = data;
         for(int r = 0; r < height; r++) {
             if(get(r, r) == 0) {
@@ -158,7 +153,7 @@ public class Matrix {
             }
             newdata[r][width + r] = 1;
         }
-        newdata = new Matrix(newdata).RowEchelonForm().ReducedRowEchelonForm().data;
+        newdata = new Matrix(newdata).rowEchelonForm().reducedRowEchelonForm().data;
         double[][] finaldata = new double[height][width];
         for(int r = 0; r < height; r++) {
             for(int c = 0; c < width; c++) {
@@ -201,18 +196,24 @@ public class Matrix {
             return false;
         }
         Matrix mat = (Matrix) other;
-        if(height == mat.getHeight() && width == mat.getWidth()) {
-        } else {
+        if (height != mat.getHeight() || width != mat.getWidth()) {
             return false;
         }
+        return hashCode() == mat.hashCode();
+    }
+
+    @Override
+    public int hashCode() {
+        int code = 0;
+        int prime = 31;
         for(int r = 0; r < height; r++) {
             for(int c = 0; c < width; c++) {
-                if(!(Math.abs(get(r, c) - mat.get(r, c)) < .0001)) {
-                    return false;
-                }
+                code = (int) (prime * code + get(r, c));
             }
         }
-        return true;
+        code = prime * code + height;
+        code = prime * code + width;
+        return code;
     }
     
     public String toString() {

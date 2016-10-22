@@ -34,11 +34,6 @@ import com.mlbean.testObjects.*;
  * @author John
  */
 public class MatrixTest {
-    
-
-    
-    public MatrixTest() {
-    }
 
     @Test
     public void createTwoByThreeArray() {
@@ -127,7 +122,7 @@ public class MatrixTest {
     public void rowEchelon() {
         double[][] testData = {{1, 7, 1},{2, 4, 3},{7, 1, 4}};
         Matrix testMat = new Matrix(testData);
-        testMat = testMat.RowEchelonForm();
+        testMat = testMat.rowEchelonForm();
         double[][] trueData = {{1, 7, 1}, {0, 1, -0.1}, {0, 0, 1}};
         Matrix trueMat = new Matrix(trueData);
         assertEquals(testMat, trueMat);
@@ -137,7 +132,7 @@ public class MatrixTest {
     public void reducedRowEchelon() {
         double[][] testData = {{1, 7, 1}, {0, 1, -0.1}, {0, 0, 1}};
         Matrix testMat = new Matrix(testData);
-        testMat = testMat.ReducedRowEchelonForm();
+        testMat = testMat.reducedRowEchelonForm();
         double[][] trueData = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
         Matrix trueMat = new Matrix(trueData);
         assertEquals(testMat, trueMat);

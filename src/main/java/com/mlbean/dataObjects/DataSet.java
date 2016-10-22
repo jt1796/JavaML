@@ -125,7 +125,7 @@ public class DataSet implements Iterable<DataRow> {
 
     public String toString() {
         int tableWidth = 0;
-        String table = "";
+        StringBuilder table = new StringBuilder();
         int[] colWidths = new int[header.numAttributes()];
         for(int i = 0; i < header.numAttributes() - 1; i++) {
             colWidths[i] = orderedNonLabels[i].length();
@@ -143,34 +143,34 @@ public class DataSet implements Iterable<DataRow> {
         tableWidth -= 3;
         String prefix = "";
         for(int i = 0; i < colWidths.length - 1; i++) {
-            table += prefix + rightPad(orderedNonLabels[i], colWidths[i]);
+            table.append(prefix).append(rightPad(orderedNonLabels[i], colWidths[i]));
             prefix = " | ";
         }
-        table += prefix + rightPad(labelName, colWidths[orderedNonLabels.length - 1]);
-        table += "\n";
+        table.append(prefix).append(rightPad(labelName, colWidths[orderedNonLabels.length - 1]));
+        table.append("\n");
         for(int i = 0; i < tableWidth; i++) {
-            table += "=";
+            table.append("=");
         }
-        table += "\n";
+        table.append("\n");
         for(DataRow d : this) {
             prefix = "";
             for(int i = 0; i < colWidths.length - 1; i++) {
-                table += prefix + rightPad(d.getNonLabel(i).toString(), colWidths[i]);
+                table.append(prefix).append(rightPad(d.getNonLabel(i).toString(), colWidths[i]));
                 prefix = " | ";
             }
-            table += prefix + rightPad(d.getLabel().toString(), colWidths[colWidths.length - 1]);
-            table += "\n";
+            table.append(prefix).append(rightPad(d.getLabel().toString(), colWidths[colWidths.length - 1]));
+            table.append("\n");
         }
-        return table;
+        return table.toString();
     }
     
     private String rightPad(String word, int length) {
         int diff = length - word.length();
-        String spaces = "";
+        StringBuilder sBuf = new StringBuilder();
         for(int i = 0 ; i < diff; i++) {
-            spaces += " ";
+            sBuf.append(" ");
         }
-        return word + spaces;
+        return word + sBuf.toString();
     }
     
     public DataHeader getHeader() {
