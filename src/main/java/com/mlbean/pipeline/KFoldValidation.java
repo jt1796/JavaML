@@ -1,6 +1,7 @@
 package com.mlbean.pipeline;
 
 import com.mlbean.classifiers.Classifier;
+import com.mlbean.dataObjects.DataRow;
 import com.mlbean.dataObjects.DataSet;
 import java.util.LinkedList;
 
@@ -18,15 +19,50 @@ public class KFoldValidation {
         if(dataSet.getDataHeight() < folds) {
             throw new RuntimeException("More folds than data rows");
         }
-        DataSet[] dataSets = new DataSet[folds];
-        int windowSize = dataSet.getDataHeight() / folds;
-        // IN PROGRESS
+        double accuracy = Double.MIN_VALUE;
+        DataSet[] dataSets = chunkDataSet(dataSet);
         for(int i = 0; i < folds; i++) {
-            int minRange = i * dataSet.getDataHeight() / folds;
-            int maxRange = minRange + dataSet.getDataHeight() / folds;
-            dataSets[i] = new DataSet(dataSet.getHeader());
-            dataSets[i].switchBacking(new LinkedList<>());
+            trainOnAllButOne(classifier, dataSets, i);
+            accuracy += (classifier, dataSets[i]);
         }
-        return 0.0;
+        return accuracy / folds;
+    }
+
+    private double benchMark(Classifier classifier, DataSet data) {
+        return 0.0
+    }
+
+    private void trainOnAllButOne(Classifier classifier, DataSet[] sets, int n) {
+        DataSet[] toTrainWith = new DataSet[sets.length - 1];
+        for(int i, j = 0; i < sets.length; i++) {
+            if(i == n) {
+                continue;
+            }
+            toTrainWith[j++] = sets[i];
+        }
+        classifier.train(globDataSets(toTrainWith));
+    }
+
+    private DataSet[] chunkDataSet(DataSet set) {
+        int window = set.getDataHeight() / folds;
+        DataSet[] chunked = new DataSet[folds];
+        int rowCtr = 0;
+        for(DataRow row : set) {
+            if(rowCtr++ % window == 0) {
+                chunked[rowCtr / window] = new DataSet(set.getHeader());
+            }
+            chunked[rowCtr / window].addRow(row);
+        }
+        return chunked;
+    }
+
+    private DataSet globDataSets(DataSet... sets) {
+        DataSet globbed = new DataSet(sets[0].getHeader());
+        for(DataSet set : sets) {
+            for(DataRow row : set) {
+                globbed.addRow(row);
+            }
+        }
+        return globbed;
     }
 }
