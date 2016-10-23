@@ -30,8 +30,6 @@ import com.mlbean.dataObjects.DataHeader;
 import com.mlbean.dataObjects.DataRow;
 import com.mlbean.dataObjects.DataSet;
 
-import javax.print.attribute.standard.DateTimeAtCompleted;
-import javax.xml.crypto.Data;
 import java.util.*;
 
 /**
@@ -120,8 +118,7 @@ public class DecisionTree implements Classifier {
             hValues.add((-1) * Double.MAX_VALUE);
             hValues.add(Double.MAX_VALUE);
             ArrayList<Double> lValues = new ArrayList<>(hValues);
-            lValues.sort((t0, t1) -> Double.compare(t0, t1));
-            System.out.println(lValues);
+            lValues.sort(Double::compare);
             for(int i = 0; i < lValues.size() - 1; i++) {
                 double splitval = (lValues.get(i) + lValues.get(i + 1)) / 2;
                 NumericDataSplit split = new NumericDataSplit();

@@ -24,7 +24,7 @@ public class DecisionTreeTest {
     }
 
     @Test
-    public void testTwoToOneSplit() {
+    public void testContradictingNominals() {
         DataSet one = new DataSet(new DataHeader("color", "nominal", "type", "nominal"));
         one.addRow(new DataRow(new DataElement[] {new DataElement("red"), new DataElement("heavy")}));
         one.addRow(new DataRow(new DataElement[] {new DataElement("red"), new DataElement("heavy")}));
@@ -73,5 +73,25 @@ public class DecisionTreeTest {
         tree = new DecisionTree();
         tree.train(one);
         assertEquals(new DataElement("heavy"), tree.predict(factory.genElementArray(7.00)));
+        assertEquals(new DataElement("heavy"), tree.predict(factory.genElementArray((3.5 + 6.0)/2 + 0.001)));
+        assertEquals(new DataElement("light"), tree.predict(factory.genElementArray(-9999.0)));
+        assertEquals(new DataElement("heavy"), tree.predict(factory.genElementArray(9999)));
+        assertEquals(new DataElement("light"), tree.predict(factory.genElementArray((3.5 + 6.0)/2 - 0.001)));
     }
+
+    @Test
+    public void testMixedAttributeTypes() {
+        DataSet two = new DataSet(new DataHeader("price", "numeric", "size", "nominal", "value", "nominal"));
+        two.addRow(factory.genRow(1.00, "large", "low"));
+        two.addRow(factory.genRow(18.95, "small", "low"));
+        two.addRow(factory.genRow(2.00, "small", "low"));
+        two.addRow(factory.genRow(20.00, "large", "high"));
+        tree = new DecisionTree();
+        tree.train(two);
+        assertEquals(new DataElement("low"), tree.predict(factory.genElementArray(2.00, "large")));
+        assertEquals(new DataElement("low"), tree.predict(factory.genElementArray(1.50, "small")));
+        assertEquals(new DataElement("low"), tree.predict(factory.genElementArray(18.00, "small")));
+        assertEquals(new DataElement("high"), tree.predict(factory.genElementArray(25.00, "large")));
+    }
+
 }

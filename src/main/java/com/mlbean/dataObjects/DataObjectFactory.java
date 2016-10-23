@@ -28,6 +28,9 @@ public class DataObjectFactory {
         if(e instanceof Double) {
             return new DataElement((Double) e);
         }
+        if(e instanceof Integer) {
+            return new DataElement((Integer) e);
+        }
         return null;
     }
 }
