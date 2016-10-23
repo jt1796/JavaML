@@ -30,10 +30,9 @@ import com.mlbean.dataObjects.DataHeader;
 import com.mlbean.dataObjects.DataRow;
 import com.mlbean.dataObjects.DataSet;
 
+import javax.print.attribute.standard.DateTimeAtCompleted;
 import javax.xml.crypto.Data;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -68,15 +67,15 @@ public class DecisionTree implements Classifier {
     }
     
     private HashMap<String, Integer> marshalNominalLabels(DataSet data) {
-        HashMap<String, Integer> marshalled = new HashMap<>();
+        HashMap<String, Integer> marshaled = new HashMap<>();
         for(DataRow row : data) {
             String classLabel = row.getLabel().getNominalValue();
-            if(!marshalled.containsKey(classLabel)) {
-                marshalled.put(classLabel, 0);
+            if(!marshaled.containsKey(classLabel)) {
+                marshaled.put(classLabel, 0);
             }
-            marshalled.put(classLabel, 1 + marshalled.get(classLabel));
+            marshaled.put(classLabel, 1 + marshaled.get(classLabel));
         }
-        return marshalled;
+        return marshaled;
     }
     
     private DataSplit findBestSplitOnCol(DataSet data) {
@@ -94,14 +93,59 @@ public class DecisionTree implements Classifier {
         return bestSplit;
     }
 
+    private DataSplit findBestSplitOnColAtt(DataSet data, int col) {
+        double leastEntropy = Double.MAX_VALUE;
+        DataSplit bestSplit = null;
+        if (data.getHeader().getAttributeTypeByIndex(col).equals("nominal")) {
+            HashSet<DataElement> attSet = new HashSet<>();
+            for(DataRow d : data) {
+                attSet.add(d.getAttribute(col));
+            }
+            for(DataElement val : attSet) {
+                NominalDataSplit split = new NominalDataSplit();
+                split.attribute = col;
+                split.splitVal = val;
+                DataSet[] datasets = split.split(data);
+                double entropy = entropy(datasets[0]) + entropy(datasets[1]);
+                if (entropy < leastEntropy) {
+                    leastEntropy = entropy;
+                    bestSplit = split;
+                }
+            }
+        } else {
+            HashSet<Double> hValues = new HashSet<>();
+            for(DataRow d : data) {
+                hValues.add(d.getNonLabel(col).getNumericValue());
+            }
+            hValues.add((-1) * Double.MAX_VALUE);
+            hValues.add(Double.MAX_VALUE);
+            ArrayList<Double> lValues = new ArrayList<>(hValues);
+            lValues.sort((t0, t1) -> Double.compare(t0, t1));
+            System.out.println(lValues);
+            for(int i = 0; i < lValues.size() - 1; i++) {
+                double splitval = (lValues.get(i) + lValues.get(i + 1)) / 2;
+                NumericDataSplit split = new NumericDataSplit();
+                split.attribute = col;
+                split.splitVal = new DataElement(splitval);
+                DataSet[] datasets = split.split(data);
+                double entropy = entropy(datasets[0]) + entropy(datasets[1]);
+                if (entropy < leastEntropy) {
+                    leastEntropy = entropy;
+                    bestSplit = split;
+                }
+            }
+        }
+        return bestSplit;
+    }
+
     private boolean canSplit(DataSet data) {
         for(int i = 0; i < data.getDataWidth() - 1; i++) {
-            String lastAtt = null;
+            DataElement lastAtt = null;
             for(DataRow d : data) {
                 if(null == lastAtt) {
-                    lastAtt = d.getAttribute(i).getNominalValue();
+                    lastAtt = d.getAttribute(i);
                 }
-                if(!lastAtt.equals(d.getAttribute(i).getNominalValue())) {
+                if(!lastAtt.equals(d.getAttribute(i))) {
                     return true;
                 }
             }
@@ -121,27 +165,6 @@ public class DecisionTree implements Classifier {
         }
         return attr;
     }
-
-    private DataSplit findBestSplitOnColAtt(DataSet data, int col) {
-        double leastEntropy = Double.MAX_VALUE;
-        DataSplit bestSplit = null;
-        HashSet<String> attSet = new HashSet<>();
-        for(DataRow d : data) {
-            attSet.add(d.getAttribute(col).getNominalValue());
-        }
-        for(String val : attSet) {
-            NominalDataSplit split = new NominalDataSplit();
-            split.attribute = col;
-            split.val = val;
-            DataSet[] dsets = split.split(data);
-            double entropy = entropy(dsets[0]) + entropy(dsets[1]);
-            if (entropy < leastEntropy) {
-                leastEntropy = entropy;
-                bestSplit = split;
-            }
-        }
-        return bestSplit;
-    }
     
     private class DTreeNode {
         DataSplit split = null;
@@ -154,11 +177,19 @@ public class DecisionTree implements Classifier {
                 return prediction;
             }
             int splitIndex = split.attribute;
-            String splitVal = ((NominalDataSplit) split).val;
-            if(attributes[splitIndex].getNominalValue().equals(splitVal)) {
-                return lChild.predict(attributes);
+            DataElement splitVal = split.splitVal;
+            if(splitVal.dataType().equals("nominal")) {
+                if(attributes[splitIndex].equals(splitVal)) {
+                    return lChild.predict(attributes);
+                } else {
+                    return rChild.predict(attributes);
+                }
             } else {
-                return rChild.predict(attributes);
+                if(attributes[splitIndex].getNumericValue() < splitVal.getNumericValue()) {
+                    return lChild.predict(attributes);
+                } else {
+                    return rChild.predict(attributes);
+                }
             }
         }
         
@@ -176,11 +207,11 @@ public class DecisionTree implements Classifier {
                 return;
             }
             split = findBestSplitOnCol(data);
-            DataSet[] datum = split.split(data);
+            DataSet[] dChildren = split.split(data);
             lChild = new DTreeNode();
             rChild = new DTreeNode();
-            lChild.buildChildren(datum[0]);
-            rChild.buildChildren(datum[1]);
+            lChild.buildChildren(dChildren[0]);
+            rChild.buildChildren(dChildren[1]);
         }
 
         public String toString() {
@@ -189,20 +220,23 @@ public class DecisionTree implements Classifier {
     }
     
     private abstract class DataSplit {
+        DataElement splitVal = null;
         int attribute = -1;
         abstract DataSet[] split(DataSet data);
+
+        public String toString() {
+            return "Split on index : " + attribute;
+        }
     }
     
     private class NumericDataSplit extends DataSplit {
-        double threshold;
-        
         public DataSet[] split(DataSet data) {
             DataHeader header = data.getHeader();
             DataSet left = new DataSet(header);
             DataSet right = new DataSet(header);
             for(DataRow row : data) {
                 double rowVal = row.getAttribute(attribute).getNumericValue();
-                if(rowVal < threshold) {
+                if(rowVal < splitVal.getNumericValue()) {
                     left.addRow(row);
                 } else {
                     right.addRow(row);
@@ -213,25 +247,19 @@ public class DecisionTree implements Classifier {
     }
     
     private class NominalDataSplit extends DataSplit {
-        String val;
-        
         public DataSet[] split(DataSet data) {
             DataHeader header = data.getHeader();
             DataSet left = new DataSet(header);
             DataSet right = new DataSet(header);
             for(DataRow row : data) {
                 String rowVal = row.getAttribute(attribute).getNominalValue();
-                if (rowVal.equals(val)) {
+                if (rowVal.equals(splitVal.getNominalValue())) {
                     left.addRow(row);
                 } else {
                     right.addRow(row);
                 }
             }
             return new DataSet[] {left, right};
-        }
-
-        public String toString() {
-            return "Split on index : " + attribute;
         }
     }
 }
