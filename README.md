@@ -5,9 +5,10 @@
 DONE:
 Gradient/Stochastic Descent Regression
 Closed Form Regression
+Decision Tree Classifier
 
 INPROGRESS:
-Decision Tree Classifier
+Clustering
 
 TODO:
 Support Vector Machine
