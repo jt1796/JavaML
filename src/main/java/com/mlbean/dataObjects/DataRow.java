@@ -33,9 +33,15 @@ import com.mlbean.mathObjects.Vector;
  */
 public class DataRow {
     private final DataElement[] nonLabels;
+    private final boolean isLabelled;
     private final DataElement label;
     
     public DataRow(DataElement[] attributes) {
+        this(attributes, true);
+    }
+    
+    public DataRow(DataElement[] attributes, boolean isLabelled) {
+        this.isLabelled = isLabelled;
         this.label = attributes[attributes.length - 1];
         nonLabels = new DataElement[attributes.length - 1];
         System.arraycopy(attributes, 0, nonLabels, 0, nonLabels.length);
@@ -43,11 +49,19 @@ public class DataRow {
 
     public DataRow(DataElement[] nonLabels, DataElement label) {
         this.nonLabels = new DataElement[nonLabels.length];
+        this.isLabelled = true;
         System.arraycopy(nonLabels, 0, this.nonLabels, 0, nonLabels.length);
         this.label = label;
     }
     
+    public boolean isLabelled() {
+        return isLabelled;
+    }
+    
     public DataElement getLabel() {
+        if (!isLabelled) {
+            throw new RuntimeException("this DataRow is not labelled");
+        }
         return label;
     }
     
@@ -62,14 +76,18 @@ public class DataRow {
     }
     
     public DataElement getAttribute(int i) {
-        if(i == nonLabels.length + 1) {
+        if(isLabelled && i == nonLabels.length + 1) {
             return label;
         }
         return nonLabels[i];
     }
     
     public int numAttributes() {
-        return nonLabels.length + 1;
+        if (isLabelled) {
+            return nonLabels.length + 1;
+        } else {
+            return nonLabels.length;
+        }
     }
     
     public Vector nonLabelsAsVector() {

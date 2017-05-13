@@ -29,7 +29,6 @@ import com.mlbean.mathObjects.Matrix;
 import com.mlbean.mathObjects.Vector;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 
 /**
@@ -41,16 +40,22 @@ public class DataSet implements Iterable<DataRow> {
     private Collection<DataRow> data = null;
     private String[] orderedNonLabels = null;
     private String[] orderedAttributes = null;
+    private boolean isLabelled = false;
     private String labelName = null;
     
     public DataSet(DataHeader hdr) {
+        this(hdr, true);
+    }
+    
+    public DataSet(DataHeader hdr, boolean isLabelled) {
         this.header = hdr;
+        this.isLabelled = isLabelled;
         orderedNonLabels = new String[header.numAttributes() - 1];
         orderedAttributes = new String[header.numAttributes()];
         data = new ArrayList<>();
         for(int i = 0; i < header.numAttributes(); i++) {
             String name = header.getAttributeNameByIndex(i);
-            if(i != header.numAttributes() - 1) {
+            if(i != header.numAttributes() - 1 || !isLabelled) {
                 orderedNonLabels[i] = name;
             } else {
                 labelName = name;
@@ -60,18 +65,23 @@ public class DataSet implements Iterable<DataRow> {
     }
     
     public void addRow(DataRow row) {
-        if(header.numAttributes() != row.numAttributes()) {
+        if (header.numAttributes() != row.numAttributes()) {
             throw new RuntimeException("this row does not have the right number of attributes");
         }
-        String labelType = header.getAttributeTypeByName(labelName);
-        String rowLabelType = row.getLabel().dataType();
-        if (!labelType.equals(rowLabelType)) {
-            throw new RuntimeException("this row has a type mismatch in the label");
+        if (isLabelled != row.isLabelled()) {
+            throw new RuntimeException("mismatch in isLabelled for DataSet and DataRow");
+        }
+        if (isLabelled) {
+            String labelType = header.getAttributeTypeByName(labelName);
+            String rowLabelType = row.getLabel().dataType();
+            if (!labelType.equals(rowLabelType)) {
+                throw new RuntimeException("this row has a type mismatch in the label");
+            }
         }
         int nonLabelIndex = 0;
         for(int i = 0; i < header.numAttributes(); i++) {
             String currentAttributeName = header.getAttributeNameByIndex(i);
-            if(!currentAttributeName.equals(labelName)) {
+            if(!isLabelled || !currentAttributeName.equals(labelName)) {
                 String currentNonLabelType = row.getNonLabel(nonLabelIndex).dataType();
                 if(!currentNonLabelType.equals(header.getAttributeTypeByIndex(i))) {
                     throw new RuntimeException("this row has a type mismatch in " + header.getAttributeNameByIndex(i));
@@ -107,6 +117,9 @@ public class DataSet implements Iterable<DataRow> {
     }
     
     public Vector labelsAsVector() {
+        if (!isLabelled) {
+            throw new RuntimeException("this DataSet has no labels");
+        }
         DataRow[] dataArr = data.toArray(new DataRow[getDataHeight()]);
         double[] vecData = new double[getDataHeight()];
         for(int i = 0; i < getDataHeight(); i++) {
@@ -122,55 +135,9 @@ public class DataSet implements Iterable<DataRow> {
         e.addAll(data);
         data = e;
     }
-
-    public String toString() {
-        int tableWidth = 0;
-        StringBuilder table = new StringBuilder();
-        int[] colWidths = new int[header.numAttributes()];
-        for(int i = 0; i < header.numAttributes() - 1; i++) {
-            colWidths[i] = orderedNonLabels[i].length();
-        }
-        colWidths[header.numAttributes() - 1] = this.labelName.length();
-        for(DataRow d : this) {
-            for(int i = 0; i < colWidths.length - 1; i++) {
-                colWidths[i] = Math.max(colWidths[i], d.getNonLabel(i).toString().length());
-            }
-            colWidths[colWidths.length - 1] = Math.max(colWidths[colWidths.length - 1], d.getLabel().toString().length());
-        }
-        for(int i : colWidths) {
-            tableWidth += i + 3;
-        }
-        tableWidth -= 3;
-        String prefix = "";
-        for(int i = 0; i < colWidths.length - 1; i++) {
-            table.append(prefix).append(rightPad(orderedNonLabels[i], colWidths[i]));
-            prefix = " | ";
-        }
-        table.append(prefix).append(rightPad(labelName, colWidths[orderedNonLabels.length - 1]));
-        table.append("\n");
-        for(int i = 0; i < tableWidth; i++) {
-            table.append("=");
-        }
-        table.append("\n");
-        for(DataRow d : this) {
-            prefix = "";
-            for(int i = 0; i < colWidths.length - 1; i++) {
-                table.append(prefix).append(rightPad(d.getNonLabel(i).toString(), colWidths[i]));
-                prefix = " | ";
-            }
-            table.append(prefix).append(rightPad(d.getLabel().toString(), colWidths[colWidths.length - 1]));
-            table.append("\n");
-        }
-        return table.toString();
-    }
     
-    private String rightPad(String word, int length) {
-        int diff = length - word.length();
-        StringBuilder sBuf = new StringBuilder();
-        for(int i = 0 ; i < diff; i++) {
-            sBuf.append(" ");
-        }
-        return word + sBuf.toString();
+    public String toString() {
+        return new DataPrinter(this).print();
     }
     
     public DataHeader getHeader() {
