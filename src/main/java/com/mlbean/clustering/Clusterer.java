@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package clustering;
+package com.mlbean.clustering;
 
 import com.mlbean.dataObjects.DataElement;
 import com.mlbean.dataObjects.DataSet;

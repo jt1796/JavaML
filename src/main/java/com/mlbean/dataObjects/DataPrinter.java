@@ -23,20 +23,21 @@ public class DataPrinter {
     //TODO refactor and make this work for non-labelled data sets
     public String print() {
         table = new StringBuilder();
-        int tableWidth = getTableWidth(set);
+        int[] colWidths = getTableWidths(data);
+        int tableWidth = 0;
         
         String prefix = "";
         for(int i = 0; i < colWidths.length - 1; i++) {
-            table.append(prefix).append(rightPad(orderedNonLabels[i], colWidths[i]));
+            tableWidth += colWidths[i];
+            table.append(prefix).append(rightPad(header.getAttributeNameByIndex(i), colWidths[i]));
             prefix = " | ";
         }
-        table.append(prefix).append(rightPad(labelName, colWidths[orderedNonLabels.length - 1]));
         table.append("\n");
         for(int i = 0; i < tableWidth; i++) {
             table.append("=");
         }
         table.append("\n");
-        for(DataRow d : set) {
+        for(DataRow d : data) {
             prefix = "";
             for(int i = 0; i < colWidths.length - 1; i++) {
                 table.append(prefix).append(rightPad(d.getNonLabel(i).toString(), colWidths[i]));
@@ -48,24 +49,18 @@ public class DataPrinter {
         return table.toString();
     }
     
-    private int getTableWidth(DataSet set) {
-        int tableWidth = 0;
+    private int[] getTableWidths(DataSet set) {
         int[] colWidths = new int[header.numAttributes()];
         for(int i = 0; i < header.numAttributes() - 1; i++) {
-            colWidths[i] = orderedNonLabels[i].length();
+            colWidths[i] = header.getAttributeNameByIndex(i).length();
         }
-        colWidths[header.numAttributes() - 1] = this.labelName.length();
         for(DataRow d : set) {
             for(int i = 0; i < colWidths.length - 1; i++) {
                 colWidths[i] = Math.max(colWidths[i], d.getNonLabel(i).toString().length());
             }
             colWidths[colWidths.length - 1] = Math.max(colWidths[colWidths.length - 1], d.getLabel().toString().length());
         }
-        for(int i : colWidths) {
-            tableWidth += i + 3;
-        }
-        tableWidth -= 3;
-        return tableWidth;
+        return colWidths;
     }
     
     private String rightPad(String word, int length) {
