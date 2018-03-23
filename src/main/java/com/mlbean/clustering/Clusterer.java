@@ -6,6 +6,7 @@
 package com.mlbean.clustering;
 
 import com.mlbean.dataObjects.DataElement;
+import com.mlbean.dataObjects.DataRow;
 import com.mlbean.dataObjects.DataSet;
 
 /**
@@ -13,7 +14,7 @@ import com.mlbean.dataObjects.DataSet;
  * @author john
  */
 public interface Clusterer {
-    DataElement predict(DataElement[] attributes);
+    DataElement predict(DataRow attributes);
 
     void train(DataSet data);
 }
