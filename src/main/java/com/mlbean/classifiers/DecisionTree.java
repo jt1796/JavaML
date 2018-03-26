@@ -25,6 +25,7 @@
  */
 package com.mlbean.classifiers;
 
+import com.mlbean.clustering.Classifier;
 import com.mlbean.dataObjects.DataElement;
 import com.mlbean.dataObjects.DataHeader;
 import com.mlbean.dataObjects.DataRow;

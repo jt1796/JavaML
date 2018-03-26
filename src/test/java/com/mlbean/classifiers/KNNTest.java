@@ -1,5 +1,6 @@
-package com.mlbean.clustering;
+package com.mlbean.classifiers;
 
+import com.mlbean.clustering.KNN;
 import com.mlbean.dataObjects.DataElement;
 import com.mlbean.dataObjects.DataHeader;
 import com.mlbean.dataObjects.DataRow;
@@ -19,7 +20,7 @@ public class KNNTest {
         set.addRow(new DataRow(new DataElement[]{new DataElement(-1), new DataElement(-6)}, new DataElement("orange")));
         set.addRow(new DataRow(new DataElement[]{new DataElement(-1), new DataElement(-7)}, new DataElement("orange")));
         
-        DataRow toClassify = new DataRow(new DataElement[]{new DataElement(0), new DataElement(4)}, new DataElement("apple"));
+        DataElement[] toClassify = new DataElement[]{new DataElement(0), new DataElement(4)};
         KNN clusterer = new KNN();
         clusterer.train(set);
         assertEquals("apple", clusterer.predict(toClassify).getNominalValue());
@@ -37,7 +38,7 @@ public class KNNTest {
         set.addRow(new DataRow(new DataElement[]{new DataElement(-1), new DataElement(-6)}, new DataElement(7)));
         set.addRow(new DataRow(new DataElement[]{new DataElement(-1), new DataElement(-7)}, new DataElement(9)));
         
-        DataRow toClassify = new DataRow(new DataElement[]{new DataElement(0), new DataElement(4)}, new DataElement(-1));
+        DataElement[] toClassify = new DataElement[]{new DataElement(0), new DataElement(4)};
         KNN clusterer = new KNN();
         clusterer.train(set);
         assertEquals(2.666666667, clusterer.predict(toClassify).getNumericValue(), 0.00001);

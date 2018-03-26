@@ -16,14 +16,14 @@ import java.util.PriorityQueue;
  *
  * @author john.tompkins
  */
-public class KNN implements Clusterer {
+public class KNN implements Classifier {
     
     private DataSet data;
     private int k;
     
     @Override
-    public DataElement predict(DataRow attrs) {
-        PriorityQueue<DataRow> pq = new PriorityQueue<>(data.getDataHeight(), (a, b) -> cmp(a, b, attrs) );
+    public DataElement predict(DataElement[] attributes) {
+        PriorityQueue<DataRow> pq = new PriorityQueue<>(data.getDataHeight(), (a, b) -> cmp(a, b, attributes) );
         for (DataRow dr : data) {
             pq.add(dr);
         }
@@ -76,15 +76,15 @@ public class KNN implements Clusterer {
         this.k = 3;
     }
     
-    private int cmp(DataRow a, DataRow b, DataRow attrs) {
+    private int cmp(DataRow a, DataRow b, DataElement[] attrs) {
         double db = distanceBetween(a, attrs) - distanceBetween(b, attrs);
         return (db < 0) ? -1 : 1;
     }
     
-    private double distanceBetween(DataRow a, DataRow b) {
+    private double distanceBetween(DataRow a, DataElement[] b) {
         double mulled = 0;
         for (int i = 0; i < a.numAttributes() - 1; i++) {
-            double diff = a.getAttribute(i).getNumericValue() - b.getAttribute(i).getNumericValue();
+            double diff = a.getAttribute(i).getNumericValue() - b[i].getNumericValue();
             mulled += diff * diff;
         }
         return Math.sqrt(mulled);

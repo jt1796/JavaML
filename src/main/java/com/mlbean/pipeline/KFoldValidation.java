@@ -1,6 +1,6 @@
 package com.mlbean.pipeline;
 
-import com.mlbean.classifiers.Classifier;
+import com.mlbean.clustering.Classifier;
 import com.mlbean.dataObjects.DataElement;
 import com.mlbean.dataObjects.DataRow;
 import com.mlbean.dataObjects.DataSet;

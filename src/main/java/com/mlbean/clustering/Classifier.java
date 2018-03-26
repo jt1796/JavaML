@@ -1,4 +1,4 @@
-package com.mlbean.classifiers;
+package com.mlbean.clustering;
 
 import com.mlbean.dataObjects.DataElement;
 import com.mlbean.dataObjects.DataSet;
