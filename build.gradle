@@ -1,5 +1,7 @@
 version '1.0-SNAPSHOT'
 
+apply plugin: 'application'
+
 apply plugin: 'java'
 //apply plugin: 'checkstyle'
 apply plugin: 'findbugs'
@@ -16,6 +18,14 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+mainClassName = 'com.mlbean.shell.main'
+
+jar { 
+    manifest {
+        attributes 'Main-Class': 'com.mlbean.shell.main'
+    }
 }
 
 test {
