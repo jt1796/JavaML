@@ -17,6 +17,7 @@ public class main {
             Command cmd = new Command(Command.InputStrategy.STDIN);
             cmd.fetch();
             cmd.exec(env);
+            System.out.println(cmd.stdout);
         }
     }
 }

@@ -26,4 +26,8 @@ public class Environment {
     public void appendHistory(Command cmd) {
         history.push(cmd);
     }
+    
+    public HashMap<String, DataSet> getVariables() {
+        return variables;
+    }
 }

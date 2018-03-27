@@ -13,6 +13,7 @@ public class Command {
     
     InputStrategy inputStrategy;
     String cmdTxt;
+    String stdout;
     
     public Command(InputStrategy inputStrategy) {
         this.inputStrategy = inputStrategy;
@@ -35,7 +36,8 @@ public class Command {
     
     public void exec(Environment env) {
         env.appendHistory(this);
-        // parse and exec
+        Exec e = new Exec(env, cmdTxt);
+        this.stdout = e.run();
     }
     
 }
