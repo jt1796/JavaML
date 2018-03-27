@@ -5,6 +5,9 @@
  */
 package com.mlbean.shell;
 
+import java.io.IOException;
+import java.io.Console;
+
 /**
  *
  * @author john.tompkins
@@ -28,9 +31,10 @@ public class Command {
         BUFFER
     }
     
-    public void fetch() {
+    public void fetch() throws IOException {
         if (inputStrategy == InputStrategy.STDIN) {
-            this.cmdTxt = "block on terminal io";
+            this.cmdTxt = System.console().readLine();
+            System.out.println(cmdTxt + "xxx");
         }
     }
     

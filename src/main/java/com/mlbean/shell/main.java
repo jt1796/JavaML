@@ -5,6 +5,8 @@
  */
 package com.mlbean.shell;
 
+import java.io.IOException;
+
 /**
  *
  * @author john.tompkins
@@ -15,9 +17,14 @@ public class main {
         System.out.println("Welcome to MLBean");
         while (true) {
             Command cmd = new Command(Command.InputStrategy.STDIN);
-            cmd.fetch();
-            cmd.exec(env);
-            System.out.println(cmd.stdout);
+            try {
+                cmd.fetch();
+                cmd.exec(env);
+                System.out.println(cmd.stdout);
+            } catch(IOException e) {
+                System.out.println("Error reading from stdin");
+            }
+
         }
     }
 }
