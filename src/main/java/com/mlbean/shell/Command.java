@@ -34,7 +34,6 @@ public class Command {
     public void fetch() throws IOException {
         if (inputStrategy == InputStrategy.STDIN) {
             this.cmdTxt = System.console().readLine();
-            System.out.println(cmdTxt + "xxx");
         }
     }
     

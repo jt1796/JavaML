@@ -1,15 +1,8 @@
 version '1.0-SNAPSHOT'
 
 apply plugin: 'application'
-
 apply plugin: 'java'
 apply plugin: 'groovy'
-//apply plugin: 'checkstyle'
-apply plugin: 'findbugs'
-
-findbugs {
-    sourceSets = [sourceSets.main]
-}
 
 sourceCompatibility = 1.8
 
@@ -39,6 +32,6 @@ test {
 sourceSets {
   main {
     java { srcDirs = [] }
-    groovy { srcDirs = ["src/main/java"] }  // compile   everything in src/ with groovy
+    groovy { srcDirs = ["src/main/java"] }
   }
 }
