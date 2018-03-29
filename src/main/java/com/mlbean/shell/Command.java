@@ -8,6 +8,9 @@ package com.mlbean.shell;
 import java.io.IOException;
 import java.io.Console;
 import java.util.Scanner;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+
 
 /**
  *
@@ -34,9 +37,7 @@ public class Command {
 
     public void fetch() throws IOException {
         if (inputStrategy == InputStrategy.STDIN) {
-            Scanner scan = new Scanner(System.in);
-            this.cmdTxt = scan.nextLine();
-            scan.close();
+            this.cmdTxt = new BufferedReader( new InputStreamReader( System.in ) ).readLine();
         }
     }
 
