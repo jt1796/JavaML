@@ -53,7 +53,7 @@ public class DataHeaderTest {
         try {
             DataHeader dataHeader = new DataHeader("age", "numeric", "weight", "nmeric");
         }catch(RuntimeException e) {
-            assertEquals(e.getMessage(), "Invalid type for attribute with name: weight");
+            assertEquals(e.getMessage(), "Invalid type [nmeric] for attribute [weight]");
             return;
         }
         fail("exception was not thrown");

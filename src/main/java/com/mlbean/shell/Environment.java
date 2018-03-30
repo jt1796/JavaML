@@ -14,20 +14,24 @@ import java.util.LinkedList;
  * @author john.tompkins
  */
 public class Environment {
-    
+
     LinkedList<Command> history;
     HashMap<String, DataSet> variables;
-    
+
     public Environment() {
         history = new LinkedList<>();
         variables = new HashMap<>();
     }
-    
+
     public void appendHistory(Command cmd) {
         history.push(cmd);
     }
-    
+
     public HashMap<String, DataSet> getVariables() {
         return variables;
+    }
+
+    public String toString() {
+        return "todo";
     }
 }

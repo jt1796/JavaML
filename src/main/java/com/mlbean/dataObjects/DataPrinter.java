@@ -27,8 +27,8 @@ public class DataPrinter {
         int tableWidth = 0;
         
         String prefix = "";
-        for(int i = 0; i < colWidths.length - 1; i++) {
-            tableWidth += colWidths[i];
+        for(int i = 0; i < colWidths.length; i++) {
+            tableWidth += colWidths[i] + 3;
             table.append(prefix).append(rightPad(header.getAttributeNameByIndex(i), colWidths[i]));
             prefix = " | ";
         }

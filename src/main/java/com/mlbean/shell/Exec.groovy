@@ -6,6 +6,11 @@
 
 package com.mlbean.shell
 
+import com.mlbean.clustering.Classifier
+import com.mlbean.dataObjects.DataHeader
+import com.mlbean.dataObjects.DataPrinter
+import com.mlbean.dataObjects.DataSet
+
 /**
  *
  * @author john.tompkins
@@ -22,7 +27,10 @@ class Exec {
 
     def execTable = [
         "help": [this.&help],
-        "load": [this.&load, "name", "filename"]
+        "env": [this.&env],
+        "print": [this.&print, "dataset-name"],
+        "load": [this.&load, "dataset-name", "filename"],
+        "train": [this.&train, "[classier|clusterer|regression]", "datase-name"]
     ]
 
     public String run() {
@@ -33,11 +41,40 @@ class Exec {
         if (entry == null) {
             return "command not found: ${method}"
         }
+        if (args.size() + 1 != entry.size()) {
+            return help()
+        }
         return entry[0](*args)
+    }
+    
+    private String train(String type, String dataset) {
+        DataSet toTrainOn = env.getVariables()[dataset]
+        if (toTrainOn) {
+            return "dataset $dataset not in environment"
+        }
     }
 
     private String load(String name, String fp) {
-        env.getVariables()[name] = fp
+        DataHeader dh = null
+        FSLoader fs = new FSLoader();
+        if (fs.headerExists(fp)) {
+            dh = fs.getHeader(fp)
+        }
+        DataSet ds = fs.load(fp, dh)
+        env.getVariables()[name] = ds
+    }
+
+    private String env() {
+        return env.getVariables().collect {
+            "  ${it.key} DATASET"
+        }.join("\n")
+    }
+    
+    private String print(String ds) {
+        if (null == env.getVariables()[ds]) {
+            return "no dataset $ds loaded"
+        }
+        return env.getVariables()[ds].toString()
     }
 
     private String help() {

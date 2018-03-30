@@ -24,7 +24,6 @@ public class main {
             } catch(IOException e) {
                 System.out.println("Error reading from stdin");
             }
-
         }
     }
 }

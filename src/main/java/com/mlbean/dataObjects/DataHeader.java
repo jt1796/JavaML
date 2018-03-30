@@ -50,7 +50,7 @@ public class DataHeader {
                 throw new RuntimeException("Cannot reuse attribute names: " + name);
             }
             if (!("nominal".equals(type) || "numeric".equals(type))) {
-                throw new RuntimeException("Invalid type for attribute with name: " + name);
+                throw new RuntimeException("Invalid type [" + type + "] for attribute [" + name + "]");
             }
             indexLookup.put(name, i / 2);
             header.add(new DataSpot(namesAndTypes[i], namesAndTypes[i + 1]));
