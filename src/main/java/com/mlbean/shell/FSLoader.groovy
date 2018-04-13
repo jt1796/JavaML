@@ -35,10 +35,10 @@ class FSLoader {
         return dh
     }
     
-    // handle labeled?
-    public DataSet load(String fp, DataHeader dh) {
+    public DataSet load(String fp, DataHeader dh, label) {
+        label = dh.getAttributeIndexByName(label)
         File file = new File(fp)
-        DataSet dataSet = new DataSet(dh);
+        DataSet dataSet = new DataSet(dh.rotateLabel(label))
         boolean firstLine = true
         file.eachLine { String line ->
             if (firstLine) {
@@ -51,6 +51,7 @@ class FSLoader {
                     elements[it] = elements[it].toDouble()
                 }
             }
+            elements << elements.removeAt(label)
             DataRow row = new DataRow((DataElement[]) elements.collect { it -> new DataElement(it) }.toArray())
             dataSet.addRow(row);
         }

@@ -30,6 +30,7 @@ import com.mlbean.mathObjects.Vector;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  *
@@ -114,6 +115,21 @@ public class DataSet implements Iterable<DataRow> {
             }
         }
         return new Matrix(matData);
+    }
+    
+    public List<DataSet> chunk(int chunking) {
+        ArrayList<DataRow> backing = new ArrayList<>();
+        switchBacking(backing);
+        List<DataSet> chunks = new ArrayList<>();
+        DataSet curChunk = null;
+        for (int i = 0; i < data.size(); i++) {
+            if (i % chunking == 0) {
+                curChunk = new DataSet(header);
+                chunks.add(curChunk);
+            }
+            curChunk.addRow(backing.get(i));
+        }
+        return chunks;
     }
     
     public Vector labelsAsVector() {

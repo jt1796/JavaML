@@ -7,8 +7,12 @@
 package com.mlbean.shell
 
 import com.mlbean.clustering.Classifier
+import com.mlbean.clustering.Clusterer
+import com.mlbean.clustering.KNN
+import com.mlbean.dataObjects.DataElement
 import com.mlbean.dataObjects.DataHeader
 import com.mlbean.dataObjects.DataPrinter
+import com.mlbean.dataObjects.DataRow
 import com.mlbean.dataObjects.DataSet
 
 /**
@@ -29,8 +33,9 @@ class Exec {
         "help": [this.&help],
         "env": [this.&env],
         "print": [this.&print, "dataset-name"],
-        "load": [this.&load, "dataset-name", "filename"],
-        "train": [this.&train, "[classier|clusterer|regression]", "datase-name"]
+        "load": [this.&load, "dataset-name", "filename", "label"],
+        "train": [this.&train, "[classier|clusterer|regression]", "datase-name"],
+        "test": [this.&kFold, "type", "dataset"]
     ]
 
     public String run() {
@@ -47,20 +52,69 @@ class Exec {
         return entry[0](*args)
     }
     
+    private String kFold(String type, String dataset) {
+        if (!env.getVariables().containsKey(dataset)) {
+            return "No dataset $dataset loaded!"
+        }
+        DataSet toTrainOn = env.getVariables()[dataset]
+        boolean isNominal = toTrainOn.getHeader().getAttributeTypeByIndex(toTrainOn.getHeader().numAttributes() - 1) == "nominal"
+        double score = 0.0
+        List<DataSet> sets = toTrainOn.chunk(10)
+        for (DataSet set : sets) {
+            Classifier c = new KNN();
+            c.train(set)
+            for (DataSet other : sets) {
+                if (other == set) {
+                    continue
+                }
+                for (DataRow dr : other) {
+                    DataElement prediction = c.predict(*dr.getNonLabels(), dr.getLabel())
+                    DataElement actual = dr.getLabel()
+                    if (isNominal && prediction.equals(actual)) {
+                        score += 1;
+                    }
+                    if (!isNominal) {
+                        double diff = Math.abs(prediction.getNumericValue() - actual.getNumericValue())
+                        score += diff
+                    }
+                }
+            }
+        }
+        if (isNominal) {
+            return """
+                10-fold validation summary:
+                ${100 * 10 * score / toTrainOn.size() } percent accuracy
+            """
+        }
+        return """
+            10-fold validation summary:
+            ${score / toTrainOn.getDataHeight()} average miss
+        """
+    }
+    
     private String train(String type, String dataset) {
         DataSet toTrainOn = env.getVariables()[dataset]
-        if (toTrainOn) {
-            return "dataset $dataset not in environment"
+        //TODO: better way of loading algs
+        Clusterer c;
+        if (type == "knn") {
+            c = new KNN();
         }
+        c.train(toTrainOn);
+    }
+    
+    private String predict(String trained, List<String> args) {
+        Classifier c = new KNN();
+        c.predict(x); // how to recover DataElement? Instead maybe do k fold validation.
+        return ""
     }
 
-    private String load(String name, String fp) {
+    private String load(String name, String fp, String label) {
         DataHeader dh = null
         FSLoader fs = new FSLoader();
         if (fs.headerExists(fp)) {
             dh = fs.getHeader(fp)
         }
-        DataSet ds = fs.load(fp, dh)
+        DataSet ds = fs.load(fp, dh, label)
         env.getVariables()[name] = ds
     }
 

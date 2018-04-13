@@ -22,15 +22,16 @@ public class DataPrinter {
     
     //TODO refactor and make this work for non-labelled data sets
     public String print() {
+        String sep = " | ";
         table = new StringBuilder();
         int[] colWidths = getTableWidths(data);
         int tableWidth = 0;
         
         String prefix = "";
         for(int i = 0; i < colWidths.length; i++) {
-            tableWidth += colWidths[i] + 3;
             table.append(prefix).append(rightPad(header.getAttributeNameByIndex(i), colWidths[i]));
-            prefix = " | ";
+            tableWidth += colWidths[i] + prefix.length();
+            prefix = sep;
         }
         table.append("\n");
         for(int i = 0; i < tableWidth; i++) {
@@ -41,7 +42,7 @@ public class DataPrinter {
             prefix = "";
             for(int i = 0; i < colWidths.length - 1; i++) {
                 table.append(prefix).append(rightPad(d.getNonLabel(i).toString(), colWidths[i]));
-                prefix = " | ";
+                prefix = sep;
             }
             table.append(prefix).append(rightPad(d.getLabel().toString(), colWidths[colWidths.length - 1]));
             table.append("\n");

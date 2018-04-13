@@ -60,7 +60,6 @@ public class KNN implements Classifier {
     private DataElement predictNumeric(DataRow ...kelems) {
         double sum = 0.0;
         for (DataRow dr : kelems) {
-            System.out.println(dr.getLabel().getNumericValue());
             sum += dr.getLabel().getNumericValue();
         }
         return new DataElement(sum / kelems.length);

@@ -26,6 +26,7 @@
 package com.mlbean.dataObjects;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -55,6 +56,18 @@ public class DataHeader {
             indexLookup.put(name, i / 2);
             header.add(new DataSpot(namesAndTypes[i], namesAndTypes[i + 1]));
         }
+    }
+    
+    public DataHeader rotateLabel(int promoter) {
+        ArrayList<DataSpot> cpy = new ArrayList<>();
+        cpy.addAll(header);
+        cpy.add(cpy.remove(promoter));
+        String[] namesTypes = new String[header.size() * 2];
+        for (int i = 0; i < cpy.size(); i++) {
+            namesTypes[2 * i] = cpy.get(i).name;
+            namesTypes[2 * i + 1] = cpy.get(i).type;
+        }
+        return new DataHeader(namesTypes);
     }
     
     public int numAttributes() {
