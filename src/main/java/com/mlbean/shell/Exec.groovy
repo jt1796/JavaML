@@ -88,7 +88,7 @@ class Exec {
         }
         return """
             10-fold validation summary:
-            ${score / toTrainOn.getDataHeight()} average miss
+            ${score / (9 * 8 * toTrainOn.size()) } average miss
         """
     }
     
