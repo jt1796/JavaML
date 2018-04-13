@@ -4,7 +4,6 @@ import com.mlbean.clustering.Classifier;
 import com.mlbean.dataObjects.DataElement;
 import com.mlbean.dataObjects.DataRow;
 import com.mlbean.dataObjects.DataSet;
-import java.util.LinkedList;
 
 /**
  * Created by john on 10/21/16.
