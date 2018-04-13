@@ -17,6 +17,10 @@ import com.mlbean.dataObjects.DataSet
  */
 class FSLoader {
     
+    public String loadScript(String fp) {
+        return new File(fp).txt
+    }
+    
     public boolean headerExists(String fp) {
         try {
             getHeader(fp)

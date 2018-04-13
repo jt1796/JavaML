@@ -13,6 +13,14 @@ import java.io.IOException;
  */
 public class main {
     public static void main(String[] args) {
+        if (args.length == 2 && "script".equals(args[0])) {
+            // script script = new Script()
+            // take in string or a file name? 
+            String scriptTxt = new FSLoader().loadScript(args[1]);
+            Script script = new Script(scriptTxt);
+            System.out.println(script.run());
+            return;
+        }
         Environment env = new Environment();
         System.out.println("Welcome to MLBean");
         while (true) {
